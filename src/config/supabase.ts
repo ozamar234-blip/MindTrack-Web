@@ -1,0 +1,2 @@
+export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://pvugyonxwlefvudflnrv.supabase.co';
+export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2dWd5b254d2xlZnZ1ZGZsbnJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMDc1NjksImV4cCI6MjA4NzU4MzU2OX0.ZIBKPVMIYQ3NYpsnt4j4BaF0DBh7U1N6d_y4gJWGgfY';
