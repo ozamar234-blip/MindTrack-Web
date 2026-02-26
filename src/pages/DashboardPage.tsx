@@ -24,7 +24,7 @@ export default function DashboardPage() {
 
     getEventsByDateRange(user.id, startDate.toISOString(), endDate.toISOString())
       .then(setEvents)
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false));
   }, [user, period]);
 
@@ -59,72 +59,111 @@ export default function DashboardPage() {
   })();
 
   return (
-    <div className="page">
-      <div className="page-header">
-        <h1 className="page-title">דשבורד 📊</h1>
+    <div className="page" style={{ paddingBottom: '120px' }}>
+      <div className="page-header" style={{ marginBottom: '32px', textAlign: 'right' }}>
+        <h1 className="page-title" style={{ fontSize: '2.2rem', fontWeight: 800 }}>לוח בקרה 📊</h1>
+        <p style={{ color: 'var(--text-secondary)', marginTop: '4px' }}>סקירה של המצב הרגשי שלך</p>
       </div>
 
       {/* Period Filter */}
-      <div className="period-filter">
-        <button className={`period-btn ${period === 'week' ? 'active' : ''}`} onClick={() => setPeriod('week')}>שבוע</button>
-        <button className={`period-btn ${period === 'month' ? 'active' : ''}`} onClick={() => setPeriod('month')}>חודש</button>
-        <button className={`period-btn ${period === '3months' ? 'active' : ''}`} onClick={() => setPeriod('3months')}>3 חודשים</button>
+      <div className="period-filter" style={{
+        display: 'flex',
+        gap: '8px',
+        marginBottom: '32px',
+        background: 'var(--primary-light)',
+        padding: '6px',
+        borderRadius: 'var(--radius-sm)',
+        width: 'fit-content'
+      }}>
+        <button className={`period-btn ${period === 'week' ? 'active' : ''}`} onClick={() => setPeriod('week')} style={{
+          padding: '10px 24px',
+          borderRadius: 'var(--radius-sm)',
+          border: 'none',
+          background: period === 'week' ? 'white' : 'transparent',
+          color: period === 'week' ? 'var(--primary)' : 'var(--text-secondary)',
+          fontWeight: 700,
+          cursor: 'pointer',
+          transition: 'all 0.2s ease',
+          boxShadow: period === 'week' ? 'var(--shadow-sm)' : 'none'
+        }}>שבוע</button>
+        <button className={`period-btn ${period === 'month' ? 'active' : ''}`} onClick={() => setPeriod('month')} style={{
+          padding: '10px 24px',
+          borderRadius: 'var(--radius-sm)',
+          border: 'none',
+          background: period === 'month' ? 'white' : 'transparent',
+          color: period === 'month' ? 'var(--primary)' : 'var(--text-secondary)',
+          fontWeight: 700,
+          cursor: 'pointer',
+          transition: 'all 0.2s ease',
+          boxShadow: period === 'month' ? 'var(--shadow-sm)' : 'none'
+        }}>חודש</button>
+        <button className={`period-btn ${period === '3months' ? 'active' : ''}`} onClick={() => setPeriod('3months')} style={{
+          padding: '10px 24px',
+          borderRadius: 'var(--radius-sm)',
+          border: 'none',
+          background: period === '3months' ? 'white' : 'transparent',
+          color: period === '3months' ? 'var(--primary)' : 'var(--text-secondary)',
+          fontWeight: 700,
+          cursor: 'pointer',
+          transition: 'all 0.2s ease',
+          boxShadow: period === '3months' ? 'var(--shadow-sm)' : 'none'
+        }}>3 חודשים</button>
       </div>
 
       {/* Stats */}
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-value">{totalEvents}</div>
-          <div className="stat-label">אירועים</div>
+      <div className="stats-grid" style={{ marginBottom: '32px', gap: '16px' }}>
+        <div className="stat-card" style={{ background: 'white', borderRadius: 'var(--radius-lg)', padding: '24px 16px', boxShadow: 'var(--shadow-sm)' }}>
+          <div className="stat-value" style={{ fontSize: '2.2rem', color: 'var(--primary)' }}>{totalEvents}</div>
+          <div className="stat-label" style={{ fontWeight: 600 }}>אירועים</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{avgIntensity}</div>
-          <div className="stat-label">עוצמה ממוצעת</div>
+        <div className="stat-card" style={{ background: 'white', borderRadius: 'var(--radius-lg)', padding: '24px 16px', boxShadow: 'var(--shadow-sm)' }}>
+          <div className="stat-value" style={{ fontSize: '2.2rem', color: 'var(--emergency)' }}>{avgIntensity}</div>
+          <div className="stat-label" style={{ fontWeight: 600 }}>עוצמה</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{avgSleep}</div>
-          <div className="stat-label">שעות שינה</div>
+        <div className="stat-card" style={{ background: 'white', borderRadius: 'var(--radius-lg)', padding: '24px 16px', boxShadow: 'var(--shadow-sm)' }}>
+          <div className="stat-value" style={{ fontSize: '2.2rem', color: 'var(--accent)' }}>{avgSleep}</div>
+          <div className="stat-label" style={{ fontWeight: 600 }}>שינה (ש׳)</div>
         </div>
       </div>
 
       {loading ? (
-        <div className="spinner" />
+        <div className="spinner" style={{ margin: '40px auto' }} />
       ) : events.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-icon">📊</div>
-          <div className="empty-text">אין מספיק נתונים לתקופה זו</div>
+        <div className="empty-state" style={{ padding: '60px 20px', textAlign: 'center', background: 'white', borderRadius: 'var(--radius-lg)', border: '2px dashed var(--border)' }}>
+          <div className="empty-icon" style={{ fontSize: '4rem', marginBottom: '16px' }}>📊</div>
+          <div className="empty-text" style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', fontWeight: 500 }}>אין מספיק נתונים לתקופה זו</div>
         </div>
       ) : (
-        <>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {/* Timeline Chart */}
-          <div className="chart-container">
-            <div className="chart-title">אירועים לאורך זמן</div>
-            <ResponsiveContainer width="100%" height={220}>
+          <div className="card" style={{ padding: '24px', borderRadius: 'var(--radius-lg)', background: 'white', boxShadow: 'var(--shadow-md)' }}>
+            <div className="chart-title" style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '24px' }}>אירועים לאורך זמן</div>
+            <ResponsiveContainer width="100%" height={240}>
               <LineChart data={timelineData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#EEE" />
-                <XAxis dataKey="date" fontSize={11} />
-                <YAxis fontSize={11} />
-                <Tooltip />
-                <Line type="monotone" dataKey="count" stroke="#4A90D9" strokeWidth={2} dot={{ r: 4 }} name="כמות" />
-                <Line type="monotone" dataKey="avgIntensity" stroke="#FF6B6B" strokeWidth={2} dot={{ r: 4 }} name="עוצמה" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
+                <XAxis dataKey="date" fontSize={11} axisLine={false} tickLine={false} tick={{ fill: 'var(--text-light)' }} />
+                <YAxis fontSize={11} axisLine={false} tickLine={false} tick={{ fill: 'var(--text-light)' }} />
+                <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
+                <Line type="monotone" dataKey="count" stroke="var(--primary)" strokeWidth={4} dot={{ r: 4, stroke: 'white', strokeWidth: 2, fill: 'var(--primary)' }} name="כמות" />
+                <Line type="monotone" dataKey="avgIntensity" stroke="var(--emergency)" strokeWidth={4} dot={{ r: 4, stroke: 'white', strokeWidth: 2, fill: 'var(--emergency)' }} name="עוצמה" />
               </LineChart>
             </ResponsiveContainer>
           </div>
 
           {/* Day of Week Chart */}
-          <div className="chart-container">
-            <div className="chart-title">אירועים לפי יום בשבוע</div>
-            <ResponsiveContainer width="100%" height={200}>
+          <div className="card" style={{ padding: '24px', borderRadius: 'var(--radius-lg)', background: 'white', boxShadow: 'var(--shadow-md)' }}>
+            <div className="chart-title" style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '24px' }}>אירועים לפי יום בשבוע</div>
+            <ResponsiveContainer width="100%" height={220}>
               <BarChart data={dayData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#EEE" />
-                <XAxis dataKey="day" fontSize={11} />
-                <YAxis fontSize={11} />
-                <Tooltip />
-                <Bar dataKey="count" fill="#4A90D9" radius={[4, 4, 0, 0]} name="אירועים" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
+                <XAxis dataKey="day" fontSize={11} axisLine={false} tickLine={false} tick={{ fill: 'var(--text-light)' }} />
+                <YAxis fontSize={11} axisLine={false} tickLine={false} tick={{ fill: 'var(--text-light)' }} />
+                <Tooltip cursor={{ fill: 'var(--primary-light)', opacity: 0.5 }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
+                <Bar dataKey="count" fill="var(--primary)" radius={[8, 8, 0, 0]} name="אירועים" />
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

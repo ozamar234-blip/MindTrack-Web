@@ -71,24 +71,37 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="page">
-      <div className="page-header">
-        <h1 className="page-title">⚙️ הגדרות</h1>
+    <div className="page" style={{ paddingBottom: '120px' }}>
+      <div className="page-header" style={{ marginBottom: '32px', textAlign: 'right' }}>
+        <h1 className="page-title" style={{ fontSize: '2.2rem', fontWeight: 800 }}>⚙️ הגדרות</h1>
+        <p className="page-subtitle" style={{ color: 'var(--text-secondary)' }}>נהל את החשבון וההעדפות שלך</p>
       </div>
 
-      {/* Profile */}
-      <div className="card">
-        <div className="card-header">👤 פרופיל</div>
-        <div className="input-group">
-          <label>שם תצוגה</label>
-          <input className="input" value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="השם שלך" />
+      {/* Profile Section */}
+      <div className="card" style={{ padding: '24px', borderRadius: 'var(--radius-lg)', background: 'white', boxShadow: 'var(--shadow-md)', marginBottom: '24px' }}>
+        <div className="card-header" style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>👤 פרופיל אישי</div>
+
+        <div className="input-group" style={{ marginBottom: '24px' }}>
+          <label style={{ display: 'block', marginBottom: '8px', fontWeight: 700, fontSize: '0.9rem' }}>שם תצוגה</label>
+          <input
+            className="input"
+            value={displayName}
+            onChange={e => setDisplayName(e.target.value)}
+            placeholder="השם שלך"
+            style={{ padding: '14px', borderRadius: 'var(--radius-sm)', border: '2px solid var(--border)' }}
+          />
         </div>
 
         <div className="input-group">
-          <label>מצב עיקרי</label>
-          <div className="chips-container">
+          <label style={{ display: 'block', marginBottom: '12px', fontWeight: 700, fontSize: '0.9rem' }}>מצב עיקרי למעקב</label>
+          <div className="chips-container" style={{ gap: '10px' }}>
             {CONDITIONS.map(c => (
-              <button key={c.value} className={`chip ${condition === c.value ? 'selected' : ''}`} onClick={() => setCondition(c.value)}>
+              <button
+                key={c.value}
+                className={`chip ${condition === c.value ? 'selected' : ''}`}
+                onClick={() => setCondition(c.value)}
+                style={{ padding: '12px 18px', borderRadius: 'var(--radius-sm)', fontWeight: 600 }}
+              >
                 {c.label}
               </button>
             ))}
@@ -96,50 +109,78 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Notifications */}
-      <div className="card">
-        <div className="setting-row" style={{ borderBottom: 'none' }}>
+      {/* Preferences Section */}
+      <div className="card" style={{ padding: '24px', borderRadius: 'var(--radius-lg)', background: 'white', boxShadow: 'var(--shadow-md)', marginBottom: '24px' }}>
+        <div className="setting-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0' }}>
           <div>
-            <div className="setting-label">🔔 התראות</div>
-            <div className="setting-description">קבל תזכורות יומיות</div>
+            <div className="setting-label" style={{ fontSize: '1.1rem', fontWeight: 800 }}>🔔 התראות ועדכונים</div>
+            <div className="setting-description" style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginTop: '4px' }}>קבל תזכורות לביצוע צ׳ק-אין יומי</div>
           </div>
-          <button className={`toggle ${notifications ? 'active' : ''}`} onClick={() => setNotifications(!notifications)} />
+          <button
+            className={`toggle ${notifications ? 'active' : ''}`}
+            onClick={() => setNotifications(!notifications)}
+            style={{ width: '60px', height: '32px', borderRadius: '20px', background: notifications ? 'var(--primary)' : 'var(--border)' }}
+          />
         </div>
       </div>
 
-      <button className="btn btn-primary" onClick={handleSave} disabled={saving} style={{ marginBottom: 12 }}>
-        {saving ? '⏳ שומר...' : saved ? '✅ נשמר!' : '💾 שמור הגדרות'}
+      <button className="btn btn-primary" onClick={handleSave} disabled={saving} style={{
+        padding: '18px',
+        fontSize: '1.1rem',
+        borderRadius: 'var(--radius-sm)',
+        marginBottom: '40px',
+        boxShadow: '0 8px 20px var(--primary-glow)'
+      }}>
+        {saving ? '⏳ שומר...' : saved ? '✅ נשמר בהצלחה!' : '💾 שמור שינויים'}
       </button>
 
-      {/* Danger Zone */}
-      <div className="card" style={{ borderColor: 'rgba(255, 107, 107, 0.3)', borderWidth: 1, borderStyle: 'solid', marginTop: 24 }}>
-        <div className="card-header" style={{ color: 'var(--emergency)' }}>⚠️ אזור מסוכן</div>
-        <button className="btn btn-outline btn-sm" onClick={() => setShowDeleteConfirm(true)} style={{ marginBottom: 10, borderColor: 'rgba(255, 107, 107, 0.4)', color: 'var(--emergency)' }}>
-          🗑️ מחק את כל הנתונים שלי
-        </button>
-        <button className="btn btn-ghost btn-sm" onClick={handleSignOut} style={{ color: 'var(--text-secondary)' }}>
-          🚪 התנתקות
-        </button>
+      {/* Danger Zone Section */}
+      <div className="card" style={{
+        padding: '24px',
+        borderRadius: 'var(--radius-lg)',
+        background: 'rgba(255,107,107,0.03)',
+        border: '1px solid rgba(255,107,107,0.2)',
+        marginBottom: '32px'
+      }}>
+        <div className="card-header" style={{ color: 'var(--emergency)', fontWeight: 900, marginBottom: '16px' }}>⚠️ אמצעי זהירות</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <button className="btn btn-outline" onClick={() => setShowDeleteConfirm(true)} style={{ color: 'var(--emergency)', borderColor: 'var(--emergency)', padding: '14px' }}>
+            🗑️ מחק את כל היסטוריית הנתונים
+          </button>
+          <button className="btn btn-ghost" onClick={handleSignOut} style={{ color: 'var(--text-light)', fontWeight: 700 }}>
+            🚪 התנתקות מהמערכת
+          </button>
+        </div>
       </div>
 
       {/* Disclaimer */}
-      <div style={{ marginTop: 24, padding: 18, background: 'var(--warning-light)', borderRadius: 'var(--radius-sm)', fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-        ⚠️ {DISCLAIMER_HE}
+      <div style={{
+        padding: '20px',
+        background: 'var(--bg-warm)',
+        borderRadius: 'var(--radius-lg)',
+        fontSize: '0.85rem',
+        color: 'var(--text-secondary)',
+        lineHeight: 1.8,
+        border: '1px solid var(--border)',
+        textAlign: 'right'
+      }}>
+        <strong style={{ display: 'block', marginBottom: '8px', color: 'var(--text-primary)' }}>שים לב:</strong>
+        {DISCLAIMER_HE}
       </div>
 
-      <div style={{ textAlign: 'center', marginTop: 20, marginBottom: 16, fontSize: '0.78rem', color: 'var(--text-light)' }}>
-        MindTrack v1.0 — נבנה עם 💜
+      <div style={{ textAlign: 'center', marginTop: '40px', color: 'var(--text-light)', fontSize: '0.8rem', fontWeight: 600 }}>
+        MindTrack v1.5 • נבנה באהבה עבור המסע שלך 💜
       </div>
 
-      {/* Delete Confirmation */}
+      {/* Delete Confirmation Overlay */}
       {showDeleteConfirm && (
-        <div className="overlay" onClick={() => setShowDeleteConfirm(false)}>
-          <div className="dialog" onClick={e => e.stopPropagation()}>
-            <div className="dialog-title">⚠️ מחיקת כל הנתונים</div>
-            <div className="dialog-text">פעולה זו תמחק את כל האירועים, הצ׳ק-אינים, התובנות ומפגשי הנשימה שלך. לא ניתן לשחזר.</div>
-            <div className="dialog-actions">
-              <button className="btn btn-outline btn-sm" onClick={() => setShowDeleteConfirm(false)}>ביטול</button>
-              <button className="btn btn-emergency btn-sm" onClick={handleDeleteAllData}>🗑️ מחק הכל</button>
+        <div className="overlay" onClick={() => setShowDeleteConfirm(false)} style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(5px)' }}>
+          <div className="dialog" onClick={e => e.stopPropagation()} style={{ padding: '32px', borderRadius: 'var(--radius-lg)' }}>
+            <div className="dialog-title" style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--emergency)' }}>⚠️ מחיקת כל הנתונים</div>
+            <div className="dialog-text" style={{ margin: '16px 0 32px', fontSize: '1.05rem', lineHeight: 1.6 }}>פעולה זו תמחק לצמיתות את כל האירועים, הצ׳ק-אינים, התובנות ומפגשי הנשימה שלך. פעולה זו אינה הפיכה.</div>
+            <div className="dialog-actions" style={{ gap: '12px' }}>
+              <button className="btn btn-outline" style={{ flex: 1, padding: '14px' }} onClick={() => setShowDeleteConfirm(false)}>ביטול</button>
+              <button className="btn btn-emergency" style={{ flex: 1, padding: '14px' }} onClick={handleDeleteAllData}>🗑️ מחק הכל</button>
             </div>
           </div>
         </div>
