@@ -159,10 +159,22 @@ export default function BreathingPage() {
               color: 'white',
               fontWeight: 900,
               width: '100%',
-              boxShadow: '0 12px 32px rgba(127, 19, 236, 0.3)'
+              boxShadow: '0 12px 32px rgba(127, 19, 236, 0.3)',
+              marginBottom: fromEvent ? '12px' : '0'
             }} onClick={start}>
               התחל תרגול
             </button>
+            {fromEvent && (
+              <button className="btn-ghost" style={{
+                width: '100%',
+                padding: '16px',
+                fontWeight: 800,
+                color: '#8E8E93',
+                fontSize: '1rem'
+              }} onClick={() => navigate('/')}>
+                דלג על התרגול
+              </button>
+            )}
           </div>
         )}
 
