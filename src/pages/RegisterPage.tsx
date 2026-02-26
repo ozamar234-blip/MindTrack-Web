@@ -32,33 +32,33 @@ export default function RegisterPage() {
     <div className="auth-page">
       <div className="auth-logo">🧠</div>
       <h1 className="auth-title">הרשמה</h1>
-      <p className="auth-subtitle">צור חשבון חדש ב-MindTrack</p>
+      <p className="auth-subtitle">בואו נתחיל את המסע הבריאותי שלך 🌱</p>
 
       <form className="auth-form" onSubmit={handleSubmit}>
-        {(error || localError) && <div className="auth-error">{localError || error}</div>}
+        {(error || localError) && <div className="auth-error">⚠️ {localError || error}</div>}
 
         <div className="input-group">
-          <label>שם מלא</label>
+          <label>👤 שם מלא</label>
           <input className="input" type="text" placeholder="השם שלך" value={fullName} onChange={e => setFullName(e.target.value)} required />
         </div>
 
         <div className="input-group">
-          <label>אימייל</label>
+          <label>📧 אימייל</label>
           <input className="input" type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} required dir="ltr" />
         </div>
 
         <div className="input-group">
-          <label>סיסמה</label>
+          <label>🔒 סיסמה</label>
           <input className="input" type="password" placeholder="לפחות 6 תווים" value={password} onChange={e => setPassword(e.target.value)} required dir="ltr" />
         </div>
 
         <div className="input-group">
-          <label>אימות סיסמה</label>
+          <label>🔒 אימות סיסמה</label>
           <input className="input" type="password" placeholder="הזן שוב את הסיסמה" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required dir="ltr" />
         </div>
 
-        <button className="btn btn-primary" type="submit" disabled={loading}>
-          {loading ? 'נרשם...' : 'הרשמה'}
+        <button className="btn btn-primary" type="submit" disabled={loading} style={{ marginTop: 8 }}>
+          {loading ? '⏳ נרשם...' : '✨ צור חשבון'}
         </button>
       </form>
 

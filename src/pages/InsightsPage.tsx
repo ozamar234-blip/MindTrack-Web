@@ -27,22 +27,23 @@ export default function InsightsPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title">תובנות AI 🧠</h1>
+        <h1 className="page-title">💡 תובנות AI</h1>
         <p className="page-subtitle">ניתוח דפוסים והתאמות אישיות</p>
       </div>
 
-      <button className="btn btn-accent" onClick={handleGenerate} disabled={loading} style={{ marginBottom: 20 }}>
+      <button className="btn btn-accent" onClick={handleGenerate} disabled={loading} style={{ marginBottom: 22 }}>
         <Sparkles size={18} />
-        {loading ? 'מנתח...' : 'צור תובנות חדשות'}
+        {loading ? '⏳ מנתח...' : '✨ צור תובנות חדשות'}
       </button>
 
       {loading && insights.length === 0 ? (
         <div className="spinner" />
       ) : insights.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">🔍</div>
+          <div className="empty-icon">🔮</div>
           <div className="empty-text">
-            עדיין אין תובנות. רשום לפחות {MIN_EVENTS_FOR_ANALYSIS} אירועים כדי לקבל ניתוח ראשון.
+            עדיין אין תובנות.<br />
+            רשום לפחות {MIN_EVENTS_FOR_ANALYSIS} אירועים כדי לקבל ניתוח ראשון.
           </div>
         </div>
       ) : (
@@ -60,7 +61,7 @@ export default function InsightsPage() {
             </div>
             <div className="insight-text">{insight.insight_text}</div>
             <div className="insight-meta">
-              <span>ביטחון: {insight.confidence ? getConfidenceLabel(insight.confidence) : 'לא ידוע'}</span>
+              <span>📊 ביטחון: {insight.confidence ? getConfidenceLabel(insight.confidence) : 'לא ידוע'}</span>
               <span>{insight.events_analyzed} אירועים נותחו</span>
             </div>
           </div>

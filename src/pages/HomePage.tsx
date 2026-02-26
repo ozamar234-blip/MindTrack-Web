@@ -6,6 +6,15 @@ import { getTodayCheckins } from '../api/checkins';
 import { getInsights } from '../api/insights';
 import { Wind, BarChart3, Brain } from 'lucide-react';
 
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 6) return 'לילה טוב 🌙';
+  if (hour < 12) return 'בוקר טוב ☀️';
+  if (hour < 17) return 'צהריים טובים 🌤️';
+  if (hour < 21) return 'ערב טוב 🌇';
+  return 'לילה טוב 🌙';
+}
+
 export default function HomePage() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
@@ -26,9 +35,11 @@ export default function HomePage() {
 
   return (
     <div className="page">
-      <div className="page-header">
-        <h1 className="page-title">שלום, {displayName} 👋</h1>
-        <p className="page-subtitle">איך אתה מרגיש היום?</p>
+      {/* Welcome */}
+      <div style={{ textAlign: 'center', marginBottom: 8 }}>
+        <p className="welcome-text">{getGreeting()}</p>
+        <h1 className="welcome-name">{displayName} 👋</h1>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>איך אתה מרגיש היום?</p>
       </div>
 
       {/* Emergency Button */}
@@ -44,7 +55,7 @@ export default function HomePage() {
           <div className="stat-label">אירועים השבוע</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value">{hasCheckin ? '✅' : '❌'}</div>
+          <div className="stat-value" style={{ fontSize: hasCheckin ? '1.5rem' : '1.5rem' }}>{hasCheckin ? '✅' : '➖'}</div>
           <div className="stat-label">צ׳ק-אין היום</div>
         </div>
         <div className="stat-card">
@@ -56,29 +67,29 @@ export default function HomePage() {
       {/* Banners */}
       {unreadInsights > 0 && (
         <div className="banner banner-accent" onClick={() => navigate('/insights')}>
-          <Brain size={20} />
-          <span>יש לך {unreadInsights} תובנות חדשות! לחץ לצפייה</span>
+          <span>💡</span>
+          <span style={{ fontWeight: 600 }}>יש לך {unreadInsights} תובנות חדשות!</span>
         </div>
       )}
 
       {!hasCheckin && (
         <div className="banner banner-primary" onClick={() => navigate('/checkin')}>
           <span>📋</span>
-          <span>עדיין לא מילאת צ׳ק-אין היום. לחץ למלא עכשיו</span>
+          <span style={{ fontWeight: 600 }}>עדיין לא מילאת צ׳ק-אין היום</span>
         </div>
       )}
 
       {/* Quick Actions */}
-      <div className="card">
-        <div className="card-header">פעולות מהירות</div>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <button className="btn btn-outline btn-sm" style={{ flex: 1 }} onClick={() => navigate('/breathing')}>
+      <div className="card" style={{ marginTop: 8 }}>
+        <div className="card-header">🎯 פעולות מהירות</div>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button className="btn btn-outline btn-sm" style={{ flex: 1, borderRadius: 14 }} onClick={() => navigate('/breathing')}>
             <Wind size={18} /> נשימה
           </button>
-          <button className="btn btn-outline btn-sm" style={{ flex: 1 }} onClick={() => navigate('/dashboard')}>
+          <button className="btn btn-outline btn-sm" style={{ flex: 1, borderRadius: 14 }} onClick={() => navigate('/dashboard')}>
             <BarChart3 size={18} /> דשבורד
           </button>
-          <button className="btn btn-outline btn-sm" style={{ flex: 1 }} onClick={() => navigate('/insights')}>
+          <button className="btn btn-outline btn-sm" style={{ flex: 1, borderRadius: 14 }} onClick={() => navigate('/insights')}>
             <Brain size={18} /> תובנות
           </button>
         </div>

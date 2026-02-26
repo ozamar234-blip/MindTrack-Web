@@ -6,11 +6,11 @@ import { supabase } from '../api/supabase';
 import { DISCLAIMER_HE } from '../utils/constants';
 
 const CONDITIONS = [
-  { value: 'anxiety', label: 'חרדה' },
-  { value: 'epilepsy', label: 'אפילפסיה' },
-  { value: 'migraine', label: 'מיגרנה' },
-  { value: 'digestive', label: 'בעיות עיכול' },
-  { value: 'other', label: 'אחר' },
+  { value: 'anxiety', label: '😰 חרדה' },
+  { value: 'epilepsy', label: '⚡ אפילפסיה' },
+  { value: 'migraine', label: '🤕 מיגרנה' },
+  { value: 'digestive', label: '🫁 בעיות עיכול' },
+  { value: 'other', label: '📋 אחר' },
 ];
 
 export default function SettingsPage() {
@@ -21,6 +21,7 @@ export default function SettingsPage() {
   const [notifications, setNotifications] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -33,6 +34,7 @@ export default function SettingsPage() {
   const handleSave = async () => {
     if (!user) return;
     setSaving(true);
+    setSaved(false);
     try {
       await updateProfile(user.id, {
         display_name: displayName,
@@ -40,7 +42,8 @@ export default function SettingsPage() {
         notifications_enabled: notifications,
       });
       await refreshProfile();
-      alert('ההגדרות נשמרו בהצלחה ✅');
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
     } catch {
       alert('שגיאה בשמירה');
     } finally {
@@ -56,7 +59,7 @@ export default function SettingsPage() {
       await supabase.from('daily_checkins').delete().eq('user_id', user.id);
       await supabase.from('events').delete().eq('user_id', user.id);
       setShowDeleteConfirm(false);
-      alert('כל הנתונים נמחקו');
+      alert('כל הנתונים נמחקו ✅');
     } catch {
       alert('שגיאה במחיקה');
     }
@@ -70,12 +73,12 @@ export default function SettingsPage() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title">הגדרות ⚙️</h1>
+        <h1 className="page-title">⚙️ הגדרות</h1>
       </div>
 
       {/* Profile */}
       <div className="card">
-        <div className="card-header">פרופיל</div>
+        <div className="card-header">👤 פרופיל</div>
         <div className="input-group">
           <label>שם תצוגה</label>
           <input className="input" value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="השם שלך" />
@@ -97,7 +100,7 @@ export default function SettingsPage() {
       <div className="card">
         <div className="setting-row" style={{ borderBottom: 'none' }}>
           <div>
-            <div className="setting-label">התראות</div>
+            <div className="setting-label">🔔 התראות</div>
             <div className="setting-description">קבל תזכורות יומיות</div>
           </div>
           <button className={`toggle ${notifications ? 'active' : ''}`} onClick={() => setNotifications(!notifications)} />
@@ -105,27 +108,27 @@ export default function SettingsPage() {
       </div>
 
       <button className="btn btn-primary" onClick={handleSave} disabled={saving} style={{ marginBottom: 12 }}>
-        {saving ? 'שומר...' : '💾 שמור הגדרות'}
+        {saving ? '⏳ שומר...' : saved ? '✅ נשמר!' : '💾 שמור הגדרות'}
       </button>
 
       {/* Danger Zone */}
-      <div className="card" style={{ borderColor: '#FF6B6B', borderWidth: 1, borderStyle: 'solid', marginTop: 24 }}>
-        <div className="card-header" style={{ color: '#FF6B6B' }}>אזור מסוכן</div>
-        <button className="btn btn-outline btn-sm" onClick={() => setShowDeleteConfirm(true)} style={{ marginBottom: 8, borderColor: '#FF6B6B', color: '#FF6B6B' }}>
+      <div className="card" style={{ borderColor: 'rgba(255, 107, 107, 0.3)', borderWidth: 1, borderStyle: 'solid', marginTop: 24 }}>
+        <div className="card-header" style={{ color: 'var(--emergency)' }}>⚠️ אזור מסוכן</div>
+        <button className="btn btn-outline btn-sm" onClick={() => setShowDeleteConfirm(true)} style={{ marginBottom: 10, borderColor: 'rgba(255, 107, 107, 0.4)', color: 'var(--emergency)' }}>
           🗑️ מחק את כל הנתונים שלי
         </button>
-        <button className="btn btn-ghost btn-sm" onClick={handleSignOut} style={{ color: '#636E72' }}>
+        <button className="btn btn-ghost btn-sm" onClick={handleSignOut} style={{ color: 'var(--text-secondary)' }}>
           🚪 התנתקות
         </button>
       </div>
 
       {/* Disclaimer */}
-      <div style={{ marginTop: 24, padding: 16, background: '#FFF8E1', borderRadius: 10, fontSize: '0.8rem', color: '#636E72', lineHeight: 1.6 }}>
+      <div style={{ marginTop: 24, padding: 18, background: 'var(--warning-light)', borderRadius: 'var(--radius-sm)', fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
         ⚠️ {DISCLAIMER_HE}
       </div>
 
-      <div style={{ textAlign: 'center', marginTop: 16, fontSize: '0.8rem', color: '#B2BEC3' }}>
-        MindTrack v1.0.0
+      <div style={{ textAlign: 'center', marginTop: 20, marginBottom: 16, fontSize: '0.78rem', color: 'var(--text-light)' }}>
+        MindTrack v1.0 — נבנה עם 💜
       </div>
 
       {/* Delete Confirmation */}
@@ -136,7 +139,7 @@ export default function SettingsPage() {
             <div className="dialog-text">פעולה זו תמחק את כל האירועים, הצ׳ק-אינים, התובנות ומפגשי הנשימה שלך. לא ניתן לשחזר.</div>
             <div className="dialog-actions">
               <button className="btn btn-outline btn-sm" onClick={() => setShowDeleteConfirm(false)}>ביטול</button>
-              <button className="btn btn-emergency btn-sm" onClick={handleDeleteAllData}>מחק הכל</button>
+              <button className="btn btn-emergency btn-sm" onClick={handleDeleteAllData}>🗑️ מחק הכל</button>
             </div>
           </div>
         </div>

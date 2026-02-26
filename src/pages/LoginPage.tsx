@@ -20,28 +20,28 @@ export default function LoginPage() {
     <div className="auth-page">
       <div className="auth-logo">🧠</div>
       <h1 className="auth-title">MindTrack</h1>
-      <p className="auth-subtitle">מעקב בריאותי חכם</p>
+      <p className="auth-subtitle">המקום שלך למעקב בריאותי חכם ✨</p>
 
       <form className="auth-form" onSubmit={handleSubmit}>
-        {error && <div className="auth-error">{error}</div>}
+        {error && <div className="auth-error">⚠️ {error}</div>}
 
         <div className="input-group">
-          <label>אימייל</label>
+          <label>📧 אימייל</label>
           <input className="input" type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} required dir="ltr" />
         </div>
 
         <div className="input-group">
-          <label>סיסמה</label>
+          <label>🔒 סיסמה</label>
           <input className="input" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required dir="ltr" />
         </div>
 
-        <button className="btn btn-primary" type="submit" disabled={loading}>
-          {loading ? 'מתחבר...' : 'התחברות'}
+        <button className="btn btn-primary" type="submit" disabled={loading} style={{ marginTop: 8 }}>
+          {loading ? '⏳ מתחבר...' : '🚀 התחברות'}
         </button>
       </form>
 
       <p className="auth-link">
-        אין לך חשבון? <Link to="/register">הרשמה</Link>
+        אין לך חשבון? <Link to="/register">צור חשבון חדש</Link>
       </p>
       <p className="auth-link">
         <Link to="/forgot-password">שכחתי סיסמה</Link>
