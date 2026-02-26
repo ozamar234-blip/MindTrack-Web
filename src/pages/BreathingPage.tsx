@@ -84,25 +84,84 @@ export default function BreathingPage() {
   const scale = phaseIndex === 0 ? 1 + (1 - timer / 4) * 0.4 : phaseIndex === 2 ? 1.4 - (1 - timer / 4) * 0.4 : phaseIndex === 1 ? 1.4 : 1;
 
   return (
-    <div className="page" style={{ background: 'var(--bg-warm)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <div className="page-header" style={{ marginBottom: '40px', paddingTop: '20px' }}>
-        <h1 className="page-title" style={{ fontSize: '2rem', fontWeight: 800 }}>תרגיל נשימה 🌬️</h1>
-        <p className="page-subtitle" style={{ fontSize: '1rem', opacity: 0.8 }}>נשימת קופסה 4-4-4-4</p>
+    <div className="page" style={{
+      background: 'var(--bg-warm)',
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      paddingBottom: '120px'
+    }}>
+      {/* Navigation Header */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '32px',
+        paddingTop: '8px'
+      }}>
+        <div style={{
+          width: '44px',
+          height: '44px',
+          borderRadius: '12px',
+          background: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+        }}>
+          <span style={{ fontSize: '1.2rem' }}>🌬️</span>
+        </div>
+        <span style={{ fontSize: '1.1rem', fontWeight: 900 }}>תרגיל נשימה</span>
+        <div style={{
+          width: '44px',
+          height: '44px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '1.2rem',
+          cursor: 'pointer'
+        }} onClick={() => navigate(-1)}>✕</div>
       </div>
 
-      <div className="breathing-container" style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingBottom: '100px' }}>
+      <div className="breathing-container" style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         {!isActive && !isComplete && (
-          <div className="card" style={{ padding: '32px', textAlign: 'center', borderRadius: 'var(--radius-lg)', background: 'var(--bg-card)', backdropFilter: 'blur(10px)', border: '1px solid var(--glass-border)', boxShadow: 'var(--shadow-lg)', maxWidth: '400px' }}>
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <p style={{ color: 'var(--text-primary)', marginBottom: '20px', lineHeight: 1.8, fontSize: '1.1rem', fontWeight: 500 }}>
-                שאיפה 4 שניות ← עצירה 4 שניות ← נשיפה 4 שניות ← עצירה 4 שניות
-              </p>
-              <div style={{ display: 'inline-block', padding: '8px 20px', background: 'var(--primary-light)', color: 'var(--primary)', borderRadius: 'var(--radius-full)', fontWeight: 700, fontSize: '0.9rem' }}>
-                {TOTAL_ROUNDS} סיבובים
-              </div>
+          <div className="card" style={{
+            padding: '48px 32px',
+            textAlign: 'center',
+            borderRadius: '44px',
+            background: 'white',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.06)',
+            maxWidth: '400px'
+          }}>
+            <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🫁</div>
+            <h2 style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '20px' }}>נשימת קופסה</h2>
+            <p style={{ color: '#666', marginBottom: '32px', lineHeight: 1.8, fontSize: '1rem', fontWeight: 700 }}>
+              שאיפה 4 שניות ← עצירה 4 שניות <br /> נשיפה 4 שניות ← עצירה 4 שניות
+            </p>
+            <div style={{
+              display: 'inline-block',
+              padding: '10px 24px',
+              background: 'var(--primary-light)',
+              color: 'var(--primary)',
+              borderRadius: '20px',
+              fontWeight: 900,
+              fontSize: '0.9rem',
+              marginBottom: '40px'
+            }}>
+              {TOTAL_ROUNDS} סיבובים
             </div>
-            <button className="btn btn-primary" style={{ padding: '18px 40px', fontSize: '1.2rem', borderRadius: 'var(--radius-sm)' }} onClick={start}>
-              🫁 התחל תרגול
+            <button className="btn" style={{
+              padding: '20px 48px',
+              fontSize: '1.2rem',
+              borderRadius: '32px',
+              background: 'var(--primary)',
+              color: 'white',
+              fontWeight: 900,
+              width: '100%',
+              boxShadow: '0 12px 32px rgba(127, 19, 236, 0.3)'
+            }} onClick={start}>
+              התחל תרגול
             </button>
           </div>
         )}
@@ -110,39 +169,55 @@ export default function BreathingPage() {
         {isActive && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
-              className="breathing-circle"
               style={{
                 width: '240px',
                 height: '240px',
+                borderRadius: '50%',
                 background: `linear-gradient(135deg, ${currentPhase.color}, ${currentPhase.color}CC)`,
                 transform: `scale(${scale})`,
                 boxShadow: `0 20px 60px ${currentPhase.color}44`,
-                fontSize: '1.5rem',
-                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.8rem',
+                fontWeight: 900,
                 color: 'white',
-                border: '8px solid rgba(255,255,255,0.2)',
+                border: '12px solid rgba(255,255,255,0.2)',
                 transition: 'transform 1s linear, background 0.5s ease',
               }}
             >
               {currentPhase.name}
             </div>
-            <div className="breathing-timer" style={{ fontSize: '4.5rem', fontWeight: 900, marginTop: '40px', letterSpacing: '-2px' }}>{timer}</div>
-            <div className="breathing-phase" style={{ fontSize: '1.4rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '8px' }}>{currentPhase.name}</div>
-            <div className="breathing-round" style={{ marginTop: '16px', fontWeight: 500, color: 'var(--text-secondary)', background: 'var(--border)', padding: '4px 16px', borderRadius: 'var(--radius-full)' }}>סיבוב {round} מתוך {TOTAL_ROUNDS}</div>
+            <div style={{ fontSize: '5rem', fontWeight: 900, marginTop: '48px', color: '#1A1A1A' }}>{timer}</div>
+            <div style={{ marginTop: '16px', fontWeight: 900, color: '#8E8E93', textTransform: 'uppercase', letterSpacing: '2px' }}>סיבוב {round} מתוך {TOTAL_ROUNDS}</div>
 
-            <button className="btn btn-ghost" style={{ marginTop: '48px', color: 'var(--text-secondary)', fontWeight: 600 }} onClick={() => { setIsActive(false); if (intervalRef.current) clearInterval(intervalRef.current); }}>
+            <button className="btn-ghost" style={{ marginTop: '60px', color: '#666', fontWeight: 900, fontSize: '1.1rem' }} onClick={() => { setIsActive(false); if (intervalRef.current) clearInterval(intervalRef.current); }}>
               עצור תרגיל
             </button>
           </div>
         )}
 
         {isComplete && (
-          <div className="card" style={{ padding: '40px', textAlign: 'center', borderRadius: 'var(--radius-lg)', background: 'var(--bg-card)', backdropFilter: 'blur(10px)', border: '1px solid var(--glass-border)', boxShadow: 'var(--shadow-lg)' }}>
-            <div style={{ fontSize: '5rem', marginBottom: '20px' }}>✨</div>
-            <h2 style={{ marginBottom: '12px', fontSize: '1.8rem', fontWeight: 800 }}>כל הכבוד!</h2>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: '32px', fontSize: '1.1rem' }}>סיימת את תרגיל הנשימה בהצלחה. הרגשת שיפור?</p>
-            <button className="btn btn-primary" style={{ padding: '16px 40px', fontSize: '1.1rem' }} onClick={() => navigate(fromEvent ? '/' : -1 as never)}>
-              חזרה
+          <div className="card" style={{
+            padding: '48px 32px',
+            textAlign: 'center',
+            borderRadius: '44px',
+            background: 'white',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.06)'
+          }}>
+            <div style={{ fontSize: '5rem', marginBottom: '24px' }}>✨</div>
+            <h2 style={{ marginBottom: '16px', fontSize: '2rem', fontWeight: 900 }}>כל הכבוד!</h2>
+            <p style={{ color: '#666', marginBottom: '40px', fontSize: '1.1rem', fontWeight: 700 }}>סיימת את תרגיל הנשימה בהצלחה. הרגשת שיפור?</p>
+            <button className="btn" style={{
+              padding: '20px 40px',
+              fontSize: '1.2rem',
+              background: 'var(--primary)',
+              color: 'white',
+              borderRadius: '32px',
+              fontWeight: 900,
+              width: '100%'
+            }} onClick={() => navigate(fromEvent ? '/' : -1 as never)}>
+              סגור וחזור
             </button>
           </div>
         )}

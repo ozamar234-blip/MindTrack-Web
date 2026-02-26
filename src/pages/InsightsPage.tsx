@@ -25,81 +25,132 @@ export default function InsightsPage() {
   };
 
   return (
-    <div className="page" style={{ paddingBottom: '100px' }}>
-      <div className="page-header" style={{ marginBottom: '24px', textAlign: 'right' }}>
-        <h1 className="page-title" style={{ fontSize: '2.4rem', fontWeight: 900, background: 'linear-gradient(45deg, var(--primary), var(--secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>💡 תובנות AI</h1>
-        <p className="page-subtitle" style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>ניתוח דפוסים אישי בעזרת בינה מלאכותית</p>
+    <div className="page" style={{
+      background: 'var(--bg-warm)',
+      minHeight: '100vh',
+      paddingBottom: '120px'
+    }}>
+      {/* Header */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '32px',
+        paddingTop: '8px'
+      }}>
+        <div style={{
+          width: '44px',
+          height: '44px',
+          borderRadius: '12px',
+          background: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+        }}>
+          <span style={{ fontSize: '1.2rem' }}>💡</span>
+        </div>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 900 }}>תובנות AI</h1>
+        <div style={{ width: '44px' }}></div>
       </div>
 
-      <button className="btn btn-accent" onClick={handleGenerate} disabled={loading} style={{
-        marginBottom: '32px',
-        padding: '20px',
-        fontSize: '1.2rem',
-        borderRadius: 'var(--radius-lg)',
-        background: 'linear-gradient(135deg, var(--accent), var(--primary))',
-        boxShadow: '0 10px 30px var(--primary-glow)',
+      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+        <p style={{ color: '#666', fontSize: '1rem', lineHeight: 1.5 }}>
+          ניתוח דפוסים אישי בעזרת בינה מלאכותית
+        </p>
+      </div>
+
+      <button onClick={handleGenerate} disabled={loading} style={{
+        marginBottom: '40px',
+        padding: '24px',
+        fontSize: '1.3rem',
+        borderRadius: '32px',
+        background: 'linear-gradient(135deg, #7F13EC, #2A19E6)',
+        color: 'white',
+        boxShadow: '0 12px 32px rgba(127, 19, 236, 0.3)',
         border: 'none',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         gap: '12px',
-        width: '100%'
+        width: '100%',
+        fontWeight: 900,
+        cursor: 'pointer'
       }}>
         <Sparkles size={24} />
-        {loading ? '⏳ הופך נתונים לתובנות...' : '✨ צור תובנות חדשות'}
+        {loading ? 'מייצר תובנות...' : 'צור תובנות חדשות'}
       </button>
 
       {loading && insights.length === 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 0' }}>
-          <div className="spinner" style={{ width: '50px', height: '50px', borderTopColor: 'var(--accent)' }} />
-          <p style={{ marginTop: '20px', fontWeight: 700, color: 'var(--text-light)' }}>מעבד את ההיסטוריה שלך...</p>
+          <div className="spinner" style={{ width: '50px', height: '50px', borderTopColor: 'var(--primary)' }} />
+          <p style={{ marginTop: '24px', fontWeight: 800, color: '#333' }}>מעבד את ההיסטוריה שלך...</p>
         </div>
       ) : insights.length === 0 ? (
-        <div className="card" style={{ padding: '60px 20px', textAlign: 'center', borderRadius: 'var(--radius-lg)', border: '2px dashed var(--border)', background: 'transparent' }}>
-          <div className="empty-icon" style={{ fontSize: '5rem', marginBottom: '20px' }}>🧠</div>
-          <div className="empty-text" style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+        <div style={{
+          padding: '60px 24px',
+          textAlign: 'center',
+          borderRadius: '40px',
+          background: 'rgba(255,255,255,0.5)',
+          border: '2px dashed #E0E0E0'
+        }}>
+          <div style={{ fontSize: '5rem', marginBottom: '20px' }}>🧠</div>
+          <p style={{ fontSize: '1.1rem', fontWeight: 800, color: '#333', lineHeight: 1.6 }}>
             עדיין אין מספיק נתונים.<br />
             רשום לפחות {MIN_EVENTS_FOR_ANALYSIS} אירועים בחודש האחרון כדי שנוכל למצוא דפוסים.
-          </div>
+          </p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {insights.map(insight => (
             <div
               key={insight.id}
-              className={`insight-card ${!insight.is_read ? 'unread' : ''}`}
               onClick={() => { if (!insight.is_read) markRead(insight.id); }}
               style={{
-                padding: '24px',
-                borderRadius: 'var(--radius-lg)',
-                background: insight.is_read ? 'white' : 'var(--accent-light)',
-                border: '1px solid var(--border)',
-                borderLeft: !insight.is_read ? '6px solid var(--accent)' : '1px solid var(--border)',
-                boxShadow: 'var(--shadow-sm)',
-                transition: 'transform 0.3s ease',
-                position: 'relative'
+                padding: '32px',
+                borderRadius: '32px',
+                background: insight.is_read ? 'white' : 'linear-gradient(135deg, #FDF7FF, #FFFFFF)',
+                border: insight.is_read ? '1px solid #F0F0F0' : '2px solid #F3EFFF',
+                boxShadow: '0 12px 40px rgba(0,0,0,0.04)',
+                position: 'relative',
+                cursor: 'pointer'
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                <div className="insight-category" style={{
-                  background: 'var(--primary)',
-                  color: 'white',
-                  padding: '4px 12px',
-                  borderRadius: '20px',
-                  fontSize: '0.8rem',
-                  fontWeight: 800,
-                  boxShadow: '0 4px 10px var(--primary-glow)'
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+                <div style={{
+                  background: 'var(--primary-light)',
+                  color: 'var(--primary)',
+                  padding: '6px 16px',
+                  borderRadius: '12px',
+                  fontSize: '0.85rem',
+                  fontWeight: 900
                 }}>
                   {insight.category || insight.insight_type}
                 </div>
-                <button className="delete-btn" onClick={e => { e.stopPropagation(); dismiss(insight.id); }} style={{ color: 'var(--text-light)', padding: '6px' }}>
-                  <X size={18} />
-                </button>
+                {!insight.is_read && (
+                  <div style={{ width: '10px', height: '10px', background: 'var(--primary)', borderRadius: '50%' }} />
+                )}
               </div>
-              <div className="insight-text" style={{ fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px' }}>{insight.insight_text}</div>
-              <div className="insight-meta" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: 'var(--text-light)', fontWeight: 700, borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>📊 ביטחון: {insight.confidence ? getConfidenceLabel(insight.confidence) : 'לא ידוע'}</span>
-                <span>{insight.events_analyzed} אירועים נותחו</span>
+
+              <div style={{ fontSize: '1.2rem', lineHeight: 1.5, fontWeight: 800, color: 'black', marginBottom: '24px' }}>
+                {insight.insight_text}
+              </div>
+
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: '0.85rem',
+                color: '#8E8E93',
+                fontWeight: 700,
+                borderTop: '1px solid #F5F5F9',
+                paddingTop: '20px'
+              }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  📊 ביטחון: {insight.confidence ? getConfidenceLabel(insight.confidence) : 'לא ידוע'}
+                </span>
+                <div onClick={e => { e.stopPropagation(); dismiss(insight.id); }} style={{ color: '#DDD', cursor: 'pointer' }}>
+                  <X size={18} />
+                </div>
               </div>
             </div>
           ))}

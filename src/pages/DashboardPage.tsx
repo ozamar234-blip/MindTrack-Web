@@ -59,106 +59,139 @@ export default function DashboardPage() {
   })();
 
   return (
-    <div className="page" style={{ paddingBottom: '120px' }}>
-      <div className="page-header" style={{ marginBottom: '32px', textAlign: 'right' }}>
-        <h1 className="page-title" style={{ fontSize: '2.2rem', fontWeight: 800 }}>לוח בקרה 📊</h1>
-        <p style={{ color: 'var(--text-secondary)', marginTop: '4px' }}>סקירה של המצב הרגשי שלך</p>
+    <div className="page" style={{
+      background: 'var(--bg-warm)',
+      minHeight: '100vh',
+      paddingBottom: '120px'
+    }}>
+      {/* Header */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '32px',
+        paddingTop: '8px'
+      }}>
+        <div style={{
+          width: '44px',
+          height: '44px',
+          borderRadius: '12px',
+          background: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+        }}>
+          <span style={{ fontSize: '1.2rem' }}>📊</span>
+        </div>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 900 }}>לוח בקרה</h1>
+        <div style={{ width: '44px' }}></div>
+      </div>
+
+      <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+        <p style={{ color: '#666', fontSize: '1rem', fontWeight: 700 }}>
+          סקירה של המצב הרגשי שלך
+        </p>
       </div>
 
       {/* Period Filter */}
-      <div className="period-filter" style={{
+      <div style={{
         display: 'flex',
-        gap: '8px',
+        background: '#EEE',
+        padding: '4px',
+        borderRadius: '24px',
         marginBottom: '32px',
-        background: 'var(--primary-light)',
-        padding: '6px',
-        borderRadius: 'var(--radius-sm)',
+        margin: '0 auto 32px auto',
         width: 'fit-content'
       }}>
-        <button className={`period-btn ${period === 'week' ? 'active' : ''}`} onClick={() => setPeriod('week')} style={{
-          padding: '10px 24px',
-          borderRadius: 'var(--radius-sm)',
+        <button onClick={() => setPeriod('week')} style={{
+          padding: '8px 20px',
+          borderRadius: '20px',
           border: 'none',
           background: period === 'week' ? 'white' : 'transparent',
-          color: period === 'week' ? 'var(--primary)' : 'var(--text-secondary)',
-          fontWeight: 700,
+          color: period === 'week' ? 'black' : '#8E8E93',
+          fontWeight: 900,
           cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          boxShadow: period === 'week' ? 'var(--shadow-sm)' : 'none'
+          boxShadow: period === 'week' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none'
         }}>שבוע</button>
-        <button className={`period-btn ${period === 'month' ? 'active' : ''}`} onClick={() => setPeriod('month')} style={{
-          padding: '10px 24px',
-          borderRadius: 'var(--radius-sm)',
+        <button onClick={() => setPeriod('month')} style={{
+          padding: '8px 20px',
+          borderRadius: '20px',
           border: 'none',
           background: period === 'month' ? 'white' : 'transparent',
-          color: period === 'month' ? 'var(--primary)' : 'var(--text-secondary)',
-          fontWeight: 700,
+          color: period === 'month' ? 'black' : '#8E8E93',
+          fontWeight: 900,
           cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          boxShadow: period === 'month' ? 'var(--shadow-sm)' : 'none'
+          boxShadow: period === 'month' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none'
         }}>חודש</button>
-        <button className={`period-btn ${period === '3months' ? 'active' : ''}`} onClick={() => setPeriod('3months')} style={{
-          padding: '10px 24px',
-          borderRadius: 'var(--radius-sm)',
+        <button onClick={() => setPeriod('3months')} style={{
+          padding: '8px 20px',
+          borderRadius: '20px',
           border: 'none',
           background: period === '3months' ? 'white' : 'transparent',
-          color: period === '3months' ? 'var(--primary)' : 'var(--text-secondary)',
-          fontWeight: 700,
+          color: period === '3months' ? 'black' : '#8E8E93',
+          fontWeight: 900,
           cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          boxShadow: period === '3months' ? 'var(--shadow-sm)' : 'none'
-        }}>3 חודשים</button>
+          boxShadow: period === '3months' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none'
+        }}>3 חוד׳</button>
       </div>
 
       {/* Stats */}
-      <div className="stats-grid" style={{ marginBottom: '32px', gap: '16px' }}>
-        <div className="stat-card" style={{ background: 'white', borderRadius: 'var(--radius-lg)', padding: '24px 16px', boxShadow: 'var(--shadow-sm)' }}>
-          <div className="stat-value" style={{ fontSize: '2.2rem', color: 'var(--primary)' }}>{totalEvents}</div>
-          <div className="stat-label" style={{ fontWeight: 600 }}>אירועים</div>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        gap: '12px',
+        marginBottom: '32px'
+      }}>
+        <div style={{ background: 'white', borderRadius: '24px', padding: '20px 12px', textAlign: 'center', boxShadow: '0 8px 20px rgba(0,0,0,0.03)' }}>
+          <div style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--primary)', marginBottom: '4px' }}>{totalEvents}</div>
+          <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#8E8E93' }}>אירועים</div>
         </div>
-        <div className="stat-card" style={{ background: 'white', borderRadius: 'var(--radius-lg)', padding: '24px 16px', boxShadow: 'var(--shadow-sm)' }}>
-          <div className="stat-value" style={{ fontSize: '2.2rem', color: 'var(--emergency)' }}>{avgIntensity}</div>
-          <div className="stat-label" style={{ fontWeight: 600 }}>עוצמה</div>
+        <div style={{ background: 'white', borderRadius: '24px', padding: '20px 12px', textAlign: 'center', boxShadow: '0 8px 20px rgba(0,0,0,0.03)' }}>
+          <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#FF7043', marginBottom: '4px' }}>{avgIntensity}</div>
+          <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#8E8E93' }}>עוצמה</div>
         </div>
-        <div className="stat-card" style={{ background: 'white', borderRadius: 'var(--radius-lg)', padding: '24px 16px', boxShadow: 'var(--shadow-sm)' }}>
-          <div className="stat-value" style={{ fontSize: '2.2rem', color: 'var(--accent)' }}>{avgSleep}</div>
-          <div className="stat-label" style={{ fontWeight: 600 }}>שינה (ש׳)</div>
+        <div style={{ background: 'white', borderRadius: '24px', padding: '20px 12px', textAlign: 'center', boxShadow: '0 8px 20px rgba(0,0,0,0.03)' }}>
+          <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#26A69A', marginBottom: '4px' }}>{avgSleep}</div>
+          <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#8E8E93' }}>שינה</div>
         </div>
       </div>
 
       {loading ? (
-        <div className="spinner" style={{ margin: '40px auto' }} />
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
+          <div className="spinner" />
+        </div>
       ) : events.length === 0 ? (
-        <div className="empty-state" style={{ padding: '60px 20px', textAlign: 'center', background: 'white', borderRadius: 'var(--radius-lg)', border: '2px dashed var(--border)' }}>
-          <div className="empty-icon" style={{ fontSize: '4rem', marginBottom: '16px' }}>📊</div>
-          <div className="empty-text" style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', fontWeight: 500 }}>אין מספיק נתונים לתקופה זו</div>
+        <div style={{ padding: '60px 20px', textAlign: 'center', background: 'rgba(255,255,255,0.5)', borderRadius: '32px', border: '2px dashed #E0E0E0' }}>
+          <div style={{ fontSize: '4rem', marginBottom: '16px' }}>📊</div>
+          <div style={{ fontSize: '1.1rem', color: '#8E8E93', fontWeight: 800 }}>אין מספיק נתונים לתקופה זו</div>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {/* Timeline Chart */}
-          <div className="card" style={{ padding: '24px', borderRadius: 'var(--radius-lg)', background: 'white', boxShadow: 'var(--shadow-md)' }}>
-            <div className="chart-title" style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '24px' }}>אירועים לאורך זמן</div>
+          <div className="card" style={{ padding: '32px', borderRadius: '32px', background: 'white', boxShadow: '0 12px 40px rgba(0,0,0,0.04)' }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 900, marginBottom: '32px' }}>אירועים לאורך זמן</h3>
             <ResponsiveContainer width="100%" height={240}>
               <LineChart data={timelineData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
-                <XAxis dataKey="date" fontSize={11} axisLine={false} tickLine={false} tick={{ fill: 'var(--text-light)' }} />
-                <YAxis fontSize={11} axisLine={false} tickLine={false} tick={{ fill: 'var(--text-light)' }} />
-                <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
+                <XAxis dataKey="date" fontSize={11} axisLine={false} tickLine={false} tick={{ fill: '#8E8E93', fontWeight: 700 }} />
+                <YAxis fontSize={11} axisLine={false} tickLine={false} tick={{ fill: '#8E8E93', fontWeight: 700 }} />
+                <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 12px 32px rgba(0,0,0,0.1)', fontWeight: 800 }} />
                 <Line type="monotone" dataKey="count" stroke="var(--primary)" strokeWidth={4} dot={{ r: 4, stroke: 'white', strokeWidth: 2, fill: 'var(--primary)' }} name="כמות" />
-                <Line type="monotone" dataKey="avgIntensity" stroke="var(--emergency)" strokeWidth={4} dot={{ r: 4, stroke: 'white', strokeWidth: 2, fill: 'var(--emergency)' }} name="עוצמה" />
+                <Line type="monotone" dataKey="avgIntensity" stroke="#FF7043" strokeWidth={4} dot={{ r: 4, stroke: 'white', strokeWidth: 2, fill: '#FF7043' }} name="עוצמה" />
               </LineChart>
             </ResponsiveContainer>
           </div>
 
           {/* Day of Week Chart */}
-          <div className="card" style={{ padding: '24px', borderRadius: 'var(--radius-lg)', background: 'white', boxShadow: 'var(--shadow-md)' }}>
-            <div className="chart-title" style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '24px' }}>אירועים לפי יום בשבוע</div>
+          <div className="card" style={{ padding: '32px', borderRadius: '32px', background: 'white', boxShadow: '0 12px 40px rgba(0,0,0,0.04)' }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 900, marginBottom: '32px' }}>אירועים לפי יום</h3>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={dayData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F0F0F0" vertical={false} />
-                <XAxis dataKey="day" fontSize={11} axisLine={false} tickLine={false} tick={{ fill: 'var(--text-light)' }} />
-                <YAxis fontSize={11} axisLine={false} tickLine={false} tick={{ fill: 'var(--text-light)' }} />
-                <Tooltip cursor={{ fill: 'var(--primary-light)', opacity: 0.5 }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
+                <XAxis dataKey="day" fontSize={11} axisLine={false} tickLine={false} tick={{ fill: '#8E8E93', fontWeight: 700 }} />
+                <YAxis fontSize={11} axisLine={false} tickLine={false} tick={{ fill: '#8E8E93', fontWeight: 700 }} />
+                <Tooltip cursor={{ fill: '#F5F5F9' }} contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 12px 32px rgba(0,0,0,0.1)', fontWeight: 800 }} />
                 <Bar dataKey="count" fill="var(--primary)" radius={[8, 8, 0, 0]} name="אירועים" />
               </BarChart>
             </ResponsiveContainer>

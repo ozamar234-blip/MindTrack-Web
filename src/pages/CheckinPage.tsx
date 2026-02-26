@@ -13,10 +13,10 @@ export default function CheckinPage() {
   const checkinType = hour < 14 ? 'morning' : 'evening';
 
   const [mood, setMood] = useState(3);
-  const [energy, setEnergy] = useState(3);
-  const [sleepQuality, setSleepQuality] = useState(3);
-  const [sleepHours, setSleepHours] = useState(7);
-  const [stress, setStress] = useState(3);
+  const [energy] = useState(3);
+  const [sleepQuality] = useState(3);
+  const [sleepHours] = useState(7);
+  const [stress] = useState(3);
   const [activity, setActivity] = useState('');
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
@@ -43,102 +43,170 @@ export default function CheckinPage() {
   };
 
   return (
-    <div className="page" style={{ paddingBottom: '120px' }}>
-      <div className="page-header" style={{ marginBottom: '32px', textAlign: 'right' }}>
-        <h1 className="page-title" style={{ fontSize: '2.2rem', fontWeight: 800 }}>צ׳ק-אין {checkinType === 'morning' ? '🌅 בוקר' : '🌙 ערב'}</h1>
-        <p className="page-subtitle" style={{ color: 'var(--text-secondary)', marginTop: '4px' }}>ספר לנו איך אתה מרגיש ברגע זה</p>
+    <div className="page" style={{
+      background: 'var(--bg-warm)',
+      minHeight: '100vh',
+      paddingBottom: '120px'
+    }}>
+      {/* Navigation Header */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '32px',
+        paddingTop: '8px'
+      }}>
+        <div style={{
+          width: '44px',
+          height: '44px',
+          borderRadius: '12px',
+          background: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+        }}>
+          <span style={{ fontSize: '1.2rem' }}>📅</span>
+        </div>
+        <span style={{ fontSize: '1.1rem', fontWeight: 900 }}>MindTrack</span>
+        <div style={{
+          width: '44px',
+          height: '44px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '1.2rem',
+          cursor: 'pointer'
+        }} onClick={() => navigate('/')}>✕</div>
       </div>
 
-      {/* Mood Section */}
-      <div className="card" style={{ padding: '24px', borderRadius: 'var(--radius-lg)', background: 'white', boxShadow: 'var(--shadow-md)', marginBottom: '24px' }}>
-        <div className="card-header" style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '20px' }}>איך מצב הרוח שלך?</div>
-        <div className="mood-selector" style={{ gap: '8px' }}>
-          {MOOD_EMOJIS.map(m => (
+      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+        <h1 style={{ fontSize: '2.4rem', fontWeight: 900, marginBottom: '8px' }}>איך ההרגשה שלך?</h1>
+        <p style={{ color: '#666', fontSize: '1rem' }}>קח רגע לעצמך ובדוק איך אתה מרגיש עכשיו</p>
+      </div>
+
+      {/* Mood Selector (Horizontal Circles) */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginBottom: '48px',
+        padding: '0 8px'
+      }}>
+        {MOOD_EMOJIS.map(m => (
+          <div key={m.value} style={{ textAlign: 'center' }}>
             <button
-              key={m.value}
-              className={`mood-btn ${mood === m.value ? 'selected' : ''}`}
               onClick={() => setMood(m.value)}
-              style={{ padding: '16px 8px', borderRadius: 'var(--radius-sm)' }}
+              style={{
+                width: '74px',
+                height: '74px',
+                borderRadius: '50%',
+                border: mood === m.value ? '2px solid var(--secondary)' : '1px solid #EEE',
+                background: mood === m.value ? 'white' : '#F9F9FC',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '2.5rem',
+                cursor: 'pointer',
+                marginBottom: '8px',
+                transition: 'all 0.3s ease',
+                boxShadow: mood === m.value ? '0 8px 20px rgba(42, 25, 230, 0.15)' : 'none'
+              }}
             >
-              <span className="mood-emoji" style={{ fontSize: '2.2rem' }}>{m.emoji}</span>
-              <span style={{ fontSize: '0.75rem', marginTop: '4px', fontWeight: 600 }}>{m.label}</span>
+              {m.emoji}
             </button>
-          ))}
-        </div>
+            <span style={{
+              fontSize: '0.8rem',
+              fontWeight: 700,
+              color: mood === m.value ? 'var(--secondary)' : '#666'
+            }}>{m.label}</span>
+          </div>
+        ))}
       </div>
 
-      {/* Metrics Section */}
-      <div className="card" style={{ padding: '24px', borderRadius: 'var(--radius-lg)', background: 'white', boxShadow: 'var(--shadow-md)', marginBottom: '24px' }}>
-        <div className="slider-container" style={{ marginBottom: '28px' }}>
-          <div className="slider-header" style={{ marginBottom: '12px' }}>
-            <span className="slider-label" style={{ fontWeight: 700 }}>⚡ רמת אנרגיה</span>
-            <span className="slider-value" style={{ background: 'var(--primary-light)', padding: '4px 12px', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontWeight: 800 }}>{energy}/5</span>
-          </div>
-          <input type="range" min={1} max={5} step={1} value={energy} onChange={e => setEnergy(+e.target.value)} />
-        </div>
+      <h2 style={{ fontSize: '1.2rem', fontWeight: 900, marginBottom: '24px', textAlign: 'center' }}>מה השפיע על מצב הרוח שלך היום?</h2>
 
-        <div className="slider-container" style={{ marginBottom: '28px' }}>
-          <div className="slider-header" style={{ marginBottom: '12px' }}>
-            <span className="slider-label" style={{ fontWeight: 700 }}>🛌 איכות שינה</span>
-            <span className="slider-value" style={{ background: 'var(--primary-light)', padding: '4px 12px', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontWeight: 800 }}>{sleepQuality}/5</span>
-          </div>
-          <input type="range" min={1} max={5} step={1} value={sleepQuality} onChange={e => setSleepQuality(+e.target.value)} />
-        </div>
-
-        <div className="slider-container" style={{ marginBottom: '28px' }}>
-          <div className="slider-header" style={{ marginBottom: '12px' }}>
-            <span className="slider-label" style={{ fontWeight: 700 }}>🕒 שעות שינה</span>
-            <span className="slider-value" style={{ background: 'var(--primary-light)', padding: '4px 12px', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontWeight: 800 }}>{sleepHours} שעות</span>
-          </div>
-          <input type="range" min={0} max={12} step={0.5} value={sleepHours} onChange={e => setSleepHours(+e.target.value)} />
-        </div>
-
-        <div className="slider-container">
-          <div className="slider-header" style={{ marginBottom: '12px' }}>
-            <span className="slider-label" style={{ fontWeight: 700 }}>😫 רמת לחץ</span>
-            <span className="slider-value" style={{ background: 'var(--primary-light)', padding: '4px 12px', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontWeight: 800 }}>{stress}/5</span>
-          </div>
-          <input type="range" min={1} max={5} step={1} value={stress} onChange={e => setStress(+e.target.value)} />
-        </div>
-      </div>
-
-      {/* Activity Section */}
-      <div className="card" style={{ padding: '24px', borderRadius: 'var(--radius-lg)', background: 'white', boxShadow: 'var(--shadow-md)', marginBottom: '24px' }}>
-        <div className="card-header" style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '20px' }}>מה עשית היום?</div>
-        <div className="chips-container" style={{ gap: '10px' }}>
-          {ACTIVITY_OPTIONS.map(a => (
-            <button
-              key={a.value}
-              className={`chip ${activity === a.value ? 'selected' : ''}`}
-              onClick={() => setActivity(a.value)}
-              style={{ padding: '12px 20px', borderRadius: 'var(--radius-sm)', border: '2px solid var(--border)' }}
-            >
-              <span style={{ fontSize: '1.2rem', marginLeft: '6px' }}>{a.icon}</span> {a.label}
-            </button>
-          ))}
-        </div>
+      {/* Activity Chips (Pills) */}
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        gap: '12px',
+        marginBottom: '48px'
+      }}>
+        {ACTIVITY_OPTIONS.map(a => (
+          <button
+            key={a.value}
+            onClick={() => setActivity(a.value)}
+            style={{
+              padding: '12px 24px',
+              borderRadius: '24px',
+              border: 'none',
+              background: activity === a.value ? 'var(--secondary-light)' : '#F5F5F9',
+              color: activity === a.value ? 'var(--secondary)' : '#333',
+              fontSize: '0.95rem',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              outline: activity === a.value ? '2px solid var(--secondary)' : 'none'
+            }}
+          >
+            <span style={{ fontSize: '1.2rem' }}>{a.icon}</span>
+            {a.label}
+          </button>
+        ))}
+        <button style={{
+          padding: '12px 24px',
+          borderRadius: '24px',
+          border: 'none',
+          background: '#F5F5F9',
+          color: '#333',
+          fontSize: '0.95rem',
+          fontWeight: 700,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          cursor: 'pointer'
+        }}>
+          <span style={{ fontSize: '1.2rem' }}>+</span>
+          אחר
+        </button>
       </div>
 
       {/* Notes Section */}
-      <div className="card" style={{ padding: '24px', borderRadius: 'var(--radius-lg)', background: 'white', boxShadow: 'var(--shadow-md)', marginBottom: '32px' }}>
-        <div className="card-header" style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '20px' }}>הערות אישיות</div>
+      <div style={{ marginBottom: '48px' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 900, marginBottom: '16px', textAlign: 'center' }}>הערות נוספות (אופציונלי)</h3>
         <textarea
           className="input"
-          placeholder="משהו נוסף שתרצה לשתף..."
+          placeholder="איך עבר היום שלך?"
           value={notes}
           onChange={e => setNotes(e.target.value)}
-          rows={3}
-          style={{ borderRadius: 'var(--radius-sm)', padding: '16px' }}
+          rows={4}
+          style={{
+            borderRadius: '32px',
+            padding: '24px',
+            border: 'none',
+            background: '#F9F9FC',
+            boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
+            fontSize: '1.05rem'
+          }}
         />
       </div>
 
-      <button className="btn btn-primary" onClick={handleSave} disabled={saving} style={{
-        padding: '18px',
-        fontSize: '1.2rem',
-        borderRadius: 'var(--radius-sm)',
-        boxShadow: '0 8px 25px var(--primary-glow)'
+      <button className="btn" onClick={handleSave} disabled={saving} style={{
+        background: 'var(--secondary)',
+        color: 'white',
+        padding: '20px',
+        borderRadius: '32px',
+        fontSize: '1.3rem',
+        fontWeight: 900,
+        boxShadow: '0 12px 32px rgba(42, 25, 230, 0.3)',
+        width: '100%'
       }}>
-        {saving ? '⏳ שומר...' : '💾 שמור צ׳ק-אין'}
+        {saving ? '⏳ שומר...' : 'שמור תיעוד'}
       </button>
     </div>
   );

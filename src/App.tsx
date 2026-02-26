@@ -20,30 +20,91 @@ import './styles/global.css';
 
 function BottomNav() {
   const location = useLocation();
-  const hiddenPaths = ['/login', '/register', '/forgot-password', '/event-log', '/breathing'];
+  const hiddenPaths = ['/login', '/register', '/forgot-password', '/event-log', '/breathing', '/checkin'];
   if (hiddenPaths.some(p => location.pathname.startsWith(p))) return null;
 
   return (
-    <nav className="bottom-nav">
-      <NavLink to="/" end className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-        <Home size={24} />
-        <span>בית</span>
+    <nav className="bottom-nav" style={{
+      position: 'fixed',
+      bottom: '24px',
+      left: '24px',
+      right: '24px',
+      height: '76px',
+      background: 'rgba(255, 255, 255, 0.9)',
+      backdropFilter: 'blur(20px)',
+      boxShadow: '0 12px 32px rgba(0,0,0,0.06)',
+      borderRadius: '24px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      padding: '0 12px',
+      zIndex: 1000,
+      border: '1px solid rgba(255,255,255,0.5)'
+    }}>
+      <NavLink to="/" end className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '6px',
+        color: location.pathname === '/' ? 'var(--primary)' : '#8E8E93',
+        textDecoration: 'none',
+        transition: 'all 0.3s ease',
+        transform: location.pathname === '/' ? 'scale(1.1)' : 'scale(1)'
+      }}>
+        <Home size={22} strokeWidth={location.pathname === '/' ? 2.5 : 2} />
+        <span style={{ fontSize: '0.75rem', fontWeight: 900 }}>בית</span>
       </NavLink>
-      <NavLink to="/dashboard" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-        <BarChart3 size={24} />
-        <span>דשבורד</span>
+      <NavLink to="/dashboard" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '6px',
+        color: location.pathname === '/dashboard' ? 'var(--primary)' : '#8E8E93',
+        textDecoration: 'none',
+        transition: 'all 0.3s ease',
+        transform: location.pathname === '/dashboard' ? 'scale(1.1)' : 'scale(1)'
+      }}>
+        <BarChart3 size={22} strokeWidth={location.pathname === '/dashboard' ? 2.5 : 2} />
+        <span style={{ fontSize: '0.75rem', fontWeight: 900 }}>דשבורד</span>
       </NavLink>
-      <NavLink to="/insights" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-        <Brain size={24} />
-        <span>תובנות</span>
+      <NavLink to="/insights" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '6px',
+        color: location.pathname === '/insights' ? 'var(--primary)' : '#8E8E93',
+        textDecoration: 'none',
+        transition: 'all 0.3s ease',
+        transform: location.pathname === '/insights' ? 'scale(1.1)' : 'scale(1)'
+      }}>
+        <Brain size={22} strokeWidth={location.pathname === '/insights' ? 2.5 : 2} />
+        <span style={{ fontSize: '0.75rem', fontWeight: 900 }}>תובנות</span>
       </NavLink>
-      <NavLink to="/history" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-        <Clock size={24} />
-        <span>היסטוריה</span>
+      <NavLink to="/history" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '6px',
+        color: location.pathname === '/history' ? 'var(--primary)' : '#8E8E93',
+        textDecoration: 'none',
+        transition: 'all 0.3s ease',
+        transform: location.pathname === '/history' ? 'scale(1.1)' : 'scale(1)'
+      }}>
+        <Clock size={22} strokeWidth={location.pathname === '/history' ? 2.5 : 2} />
+        <span style={{ fontSize: '0.75rem', fontWeight: 900 }}>היסטוריה</span>
       </NavLink>
-      <NavLink to="/settings" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-        <Settings size={24} />
-        <span>הגדרות</span>
+      <NavLink to="/settings" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '6px',
+        color: location.pathname === '/settings' ? 'var(--primary)' : '#8E8E93',
+        textDecoration: 'none',
+        transition: 'all 0.3s ease',
+        transform: location.pathname === '/settings' ? 'scale(1.1)' : 'scale(1)'
+      }}>
+        <Settings size={22} strokeWidth={location.pathname === '/settings' ? 2.5 : 2} />
+        <span style={{ fontSize: '0.75rem', fontWeight: 900 }}>הגדרות</span>
       </NavLink>
     </nav>
   );

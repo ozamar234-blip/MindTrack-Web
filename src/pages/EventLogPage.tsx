@@ -91,24 +91,65 @@ export default function EventLogPage() {
   };
 
   return (
-    <div className="page" style={{ paddingBottom: '120px' }}>
-      <div className="page-header" style={{ marginBottom: '24px', textAlign: 'right' }}>
-        <h1 className="page-title" style={{ fontSize: '2.2rem', fontWeight: 800 }}>רישום אירוע 📝</h1>
-        <p className="page-subtitle" style={{ color: 'var(--text-secondary)', marginTop: '4px' }}>שלב {step + 1} מתוך {STEPS.length}: {STEPS[step]}</p>
+    <div className="page" style={{
+      background: 'var(--bg-warm)',
+      minHeight: '100vh',
+      paddingBottom: '120px'
+    }}>
+      {/* Navigation Header */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '32px',
+        paddingTop: '8px'
+      }}>
+        <div style={{
+          width: '44px',
+          height: '44px',
+          borderRadius: '12px',
+          background: 'white',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+        }}>
+          <span style={{ fontSize: '1.2rem' }}>📝</span>
+        </div>
+        <span style={{ fontSize: '1.1rem', fontWeight: 900 }}>תיעוד אירוע</span>
+        <div style={{
+          width: '44px',
+          height: '44px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '1.2rem',
+          cursor: 'pointer'
+        }} onClick={() => navigate('/')}>✕</div>
+      </div>
+
+      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+        <h1 style={{ fontSize: '2.4rem', fontWeight: 900, marginBottom: '8px' }}>{STEPS[step]}</h1>
+        <p style={{ color: '#666', fontSize: '1rem' }}>שלב {step + 1} מתוך {STEPS.length}</p>
       </div>
 
       {/* Progress Bar */}
-      <div className="wizard-progress" style={{ marginBottom: '32px', gap: '8px' }}>
+      <div style={{
+        display: 'flex',
+        gap: '8px',
+        marginBottom: '40px',
+        padding: '0 8px'
+      }}>
         {STEPS.map((_, i) => (
           <div
             key={i}
-            className={`wizard-step ${i < step ? 'completed' : i === step ? 'active' : ''}`}
             style={{
-              height: '6px',
-              borderRadius: '10px',
-              background: i <= step ? 'var(--primary)' : 'var(--border)',
-              transition: 'all 0.4s ease',
-              opacity: i === step ? 1 : i < step ? 0.6 : 0.3
+              flex: 1,
+              height: '4px',
+              borderRadius: '2px',
+              background: i <= step ? 'var(--secondary)' : '#E0E0E0',
+              transition: 'all 0.4s ease'
             }}
           />
         ))}
@@ -116,44 +157,61 @@ export default function EventLogPage() {
 
       {/* Step Content */}
       <div className="card" style={{
-        minHeight: '320px',
+        minHeight: '400px',
         padding: '32px',
-        borderRadius: 'var(--radius-lg)',
+        borderRadius: '40px',
         background: 'white',
-        boxShadow: 'var(--shadow-md)',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.06)',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginBottom: '32px'
       }}>
         {step === 0 && (
-          <div className="slider-container">
-            <div className="slider-header" style={{ marginBottom: '20px' }}>
-              <span className="slider-label" style={{ fontSize: '1.2rem', fontWeight: 800 }}>מה עוצמת האירוע?</span>
-              <span className="slider-value" style={{
-                fontSize: '2rem',
-                color: getIntensityColor(intensity),
-                background: `${getIntensityColor(intensity)}11`,
-                padding: '4px 16px',
-                borderRadius: 'var(--radius-full)'
-              }}>{intensity}/10</span>
-            </div>
-            <input type="range" min={1} max={10} step={1} value={intensity} onChange={e => setIntensity(+e.target.value)} style={{ height: '12px' }} />
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: 'var(--text-light)', marginTop: '12px', fontWeight: 600 }}>
-              <span>רגוע/קל</span><span>חריף מאוד</span>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '4rem', marginBottom: '24px' }}>⚡</div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '32px' }}>מה עוצמת האירוע?</h2>
+            <div style={{
+              fontSize: '4rem',
+              fontWeight: 900,
+              color: getIntensityColor(intensity),
+              marginBottom: '24px'
+            }}>{intensity}</div>
+            <input
+              type="range"
+              min={1}
+              max={10}
+              step={1}
+              value={intensity}
+              onChange={e => setIntensity(+e.target.value)}
+              style={{ width: '100%', accentColor: getIntensityColor(intensity) }}
+            />
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', color: '#8E8E93', marginTop: '16px', fontWeight: 700 }}>
+              <span>רגוע</span><span>סוער</span>
             </div>
           </div>
         )}
 
         {step === 1 && (
           <div>
-            <div className="card-header" style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '20px' }}>מה הרגשת קודם?</div>
-            <div className="chips-container" style={{ gap: '10px' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '24px', textAlign: 'center' }}>מה הרגשת קודם?</h2>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
               {symptoms.map(s => (
                 <button
                   key={s.id}
-                  className={`chip ${selectedSymptoms.includes(s.name_he) ? 'selected' : ''}`}
                   onClick={() => toggleSymptom(s.name_he)}
-                  style={{ padding: '12px 20px', borderRadius: 'var(--radius-sm)', border: '2px solid var(--border)' }}
+                  style={{
+                    padding: '12px 24px',
+                    borderRadius: '24px',
+                    border: 'none',
+                    background: selectedSymptoms.includes(s.name_he) ? 'var(--secondary-light)' : '#F5F5F9',
+                    color: selectedSymptoms.includes(s.name_he) ? 'var(--secondary)' : '#333',
+                    fontSize: '0.95rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    outline: selectedSymptoms.includes(s.name_he) ? '2px solid var(--secondary)' : 'none'
+                  }}
                 >
                   <span style={{ fontSize: '1.2rem', marginLeft: '6px' }}>{s.icon}</span> {s.name_he}
                 </button>
@@ -164,38 +222,62 @@ export default function EventLogPage() {
 
         {step === 2 && (
           <div>
-            <div className="card-header" style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '20px' }}>מה אכלת או שתית?</div>
-            <div className="chips-container" style={{ gap: '10px', marginBottom: '24px' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '24px', textAlign: 'center' }}>מה אכלת או שתית?</h2>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', marginBottom: '32px' }}>
               {foods.map(f => (
                 <button
                   key={f.id}
-                  className={`chip ${selectedFoods.includes(f.name_he) ? 'selected' : ''}`}
                   onClick={() => toggleFood(f.name_he)}
-                  style={{ padding: '12px 20px', borderRadius: 'var(--radius-sm)', border: '2px solid var(--border)' }}
+                  style={{
+                    padding: '12px 24px',
+                    borderRadius: '24px',
+                    border: 'none',
+                    background: selectedFoods.includes(f.name_he) ? 'var(--secondary-light)' : '#F5F5F9',
+                    color: selectedFoods.includes(f.name_he) ? 'var(--secondary)' : '#333',
+                    fontSize: '0.95rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    outline: selectedFoods.includes(f.name_he) ? '2px solid var(--secondary)' : 'none'
+                  }}
                 >
                   <span style={{ fontSize: '1.2rem', marginLeft: '6px' }}>{f.icon}</span> {f.name_he}
                 </button>
               ))}
             </div>
-            <div className="input-group">
-              <input className="input" placeholder="הערות לגבי אוכל (אופציונלי)..." value={foodNotes} onChange={e => setFoodNotes(e.target.value)} style={{ padding: '16px', borderRadius: 'var(--radius-sm)' }} />
-            </div>
+            <input
+              className="input"
+              placeholder="הערות לגבי אוכל (אופציונלי)..."
+              value={foodNotes}
+              onChange={e => setFoodNotes(e.target.value)}
+              style={{ padding: '16px', borderRadius: '20px', background: '#F9F9FC' }}
+            />
           </div>
         )}
 
         {step === 3 && (
           <div>
-            <div className="card-header" style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '24px' }}>איפה אתה נמצא?</div>
-            <div className="quick-select-grid" style={{ gap: '12px' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '32px', textAlign: 'center' }}>איפה אתה נמצא?</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               {LOCATION_OPTIONS.map(loc => (
                 <button
                   key={loc.value}
-                  className={`quick-select-item ${locationType === loc.value ? 'selected' : ''}`}
                   onClick={() => setLocationType(loc.value)}
-                  style={{ padding: '20px 10px', borderRadius: 'var(--radius-sm)' }}
+                  style={{
+                    padding: '24px 16px',
+                    borderRadius: '24px',
+                    border: 'none',
+                    background: locationType === loc.value ? 'var(--secondary-light)' : '#F5F5F9',
+                    color: locationType === loc.value ? 'var(--secondary)' : '#333',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '12px',
+                    cursor: 'pointer',
+                    outline: locationType === loc.value ? '2px solid var(--secondary)' : 'none'
+                  }}
                 >
-                  <span className="quick-select-icon" style={{ fontSize: '2rem' }}>{loc.icon}</span>
-                  <span style={{ fontWeight: 600, marginTop: '4px' }}>{loc.label}</span>
+                  <span style={{ fontSize: '2.5rem' }}>{loc.icon}</span>
+                  <span style={{ fontWeight: 800 }}>{loc.label}</span>
                 </button>
               ))}
             </div>
@@ -203,59 +285,50 @@ export default function EventLogPage() {
         )}
 
         {step === 4 && (
-          <div className="slider-container">
-            <div className="slider-header" style={{ marginBottom: '20px' }}>
-              <span className="slider-label" style={{ fontSize: '1.2rem', fontWeight: 800 }}>שעות שינה</span>
-              <span className="slider-value" style={{
-                fontSize: '2rem',
-                color: 'var(--primary)',
-                background: 'var(--primary-light)',
-                padding: '4px 16px',
-                borderRadius: 'var(--radius-full)'
-              }}>{sleepHours} ש׳</span>
-            </div>
-            <input type="range" min={0} max={12} step={0.5} value={sleepHours} onChange={e => setSleepHours(+e.target.value)} />
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '4rem', marginBottom: '24px' }}>🛌</div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '32px' }}>כמה שעות ישנת?</h2>
+            <div style={{ fontSize: '4rem', fontWeight: 900, color: 'var(--secondary)', marginBottom: '24px' }}>{sleepHours}</div>
+            <input type="range" min={0} max={12} step={0.5} value={sleepHours} onChange={e => setSleepHours(+e.target.value)} style={{ width: '100%' }} />
           </div>
         )}
 
         {step === 5 && (
-          <div className="slider-container">
-            <div className="slider-header" style={{ marginBottom: '20px' }}>
-              <span className="slider-label" style={{ fontSize: '1.2rem', fontWeight: 800 }}>רמת לחץ</span>
-              <span className="slider-value" style={{
-                fontSize: '2rem',
-                color: getIntensityColor(stressLevel),
-                background: `${getIntensityColor(stressLevel)}11`,
-                padding: '4px 16px',
-                borderRadius: 'var(--radius-full)'
-              }}>{stressLevel}/10</span>
-            </div>
-            <input type="range" min={1} max={10} step={1} value={stressLevel} onChange={e => setStressLevel(+e.target.value)} />
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '4rem', marginBottom: '24px' }}>😫</div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '32px' }}>מה רמת הלחץ שלך?</h2>
+            <div style={{
+              fontSize: '4rem',
+              fontWeight: 900,
+              color: getIntensityColor(stressLevel),
+              marginBottom: '24px'
+            }}>{stressLevel}</div>
+            <input type="range" min={1} max={10} step={1} value={stressLevel} onChange={e => setStressLevel(+e.target.value)} style={{ width: '100%', accentColor: getIntensityColor(stressLevel) }} />
           </div>
         )}
 
         {step === 6 && (
           <div>
-            <div className="card-header" style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '20px' }}>הערות נוספות</div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '24px', textAlign: 'center' }}>הערות נוספות</h2>
             <textarea
               className="input"
               placeholder="תאר במילים שלך מה קרה..."
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              rows={5}
-              style={{ padding: '16px', borderRadius: 'var(--radius-sm)', lineHeight: '1.6' }}
+              rows={6}
+              style={{ padding: '24px', borderRadius: '32px', background: '#F9F9FC', fontSize: '1.1rem' }}
             />
           </div>
         )}
       </div>
 
       {/* Navigation Controls */}
-      <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
-        <button className="btn btn-outline" style={{ flex: 1, padding: '16px', borderRadius: 'var(--radius-sm)', fontWeight: 700 }} onClick={prev}>
-          {step === 0 ? 'ביטול' : '← חזרה'}
+      <div style={{ display: 'flex', gap: '16px' }}>
+        <button className="btn-ghost" style={{ flex: 1, padding: '20px', borderRadius: '32px', fontWeight: 900, fontSize: '1.1rem' }} onClick={prev}>
+          {step === 0 ? 'ביטול' : 'חזרה'}
         </button>
-        <button className="btn btn-primary" style={{ flex: 2, padding: '16px', borderRadius: 'var(--radius-sm)', fontSize: '1.1rem', boxShadow: '0 8px 25px var(--primary-glow)' }} onClick={next} disabled={!canNext() || saving}>
-          {step === STEPS.length - 1 ? (saving ? '⏳ שומר...' : '💾 שמור וסיים') : 'המשך לשלב הבא'}
+        <button className="btn" style={{ flex: 2, padding: '20px', borderRadius: '32px', background: 'var(--secondary)', color: 'white', fontWeight: 900, fontSize: '1.2rem', boxShadow: '0 12px 32px rgba(42, 25, 230, 0.3)' }} onClick={next} disabled={!canNext() || saving}>
+          {step === STEPS.length - 1 ? (saving ? '⌛ שומר...' : 'סיום ותיעוד') : 'המשך'}
         </button>
       </div>
     </div>
