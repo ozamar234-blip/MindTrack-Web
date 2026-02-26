@@ -32,7 +32,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const p = await getProfile(user.id);
         setProfile(p);
       } catch {
-        // Profile might not exist yet
+        // Profile might not exist yet (trigger delay) — retry once after 1s
+        setTimeout(async () => {
+          try {
+            const p = await getProfile(user.id);
+            setProfile(p);
+          } catch { /* still not ready */ }
+        }, 1000);
       }
     }
   };

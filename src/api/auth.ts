@@ -6,6 +6,10 @@ export async function signUp(email: string, password: string, fullName: string) 
     options: { data: { full_name: fullName } },
   });
   if (error) throw error;
+  // Supabase returns fake success with empty identities when email already exists
+  if (data.user && data.user.identities && data.user.identities.length === 0) {
+    throw new Error('User already registered');
+  }
   return data;
 }
 
