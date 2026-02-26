@@ -90,69 +90,82 @@ export default function HomePage() {
 
       {/* Features Grid */}
       <div style={{ marginBottom: '32px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h2 style={{ fontSize: '1.2rem', fontWeight: 900 }}>סיכום שבועי</h2>
-          <button className="btn-ghost" style={{ fontSize: '0.9rem', fontWeight: 700, padding: '4px 8px' }}>הצג הכל</button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 900 }}>סיכום שבועי</h2>
+          <button style={{
+            fontSize: '0.85rem',
+            fontWeight: 800,
+            padding: '6px 14px',
+            background: 'white',
+            border: '2px solid black',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}>הצג הכל</button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gridAutoRows: '1fr',
+          gap: '16px'
+        }}>
           {/* Mood Card */}
-          <div className="card" style={{ padding: '24px', borderRadius: '32px', marginBottom: 0, display: 'flex', flexDirection: 'column', height: '100%', minHeight: '160px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-              <span style={{ fontSize: '1.2rem' }}>😊</span>
-              <span style={{ color: '#00C9A7', fontWeight: 700, fontSize: '0.85rem' }}>מצב רוח</span>
+          <div className="card" style={{ padding: '24px', borderRadius: '32px', marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+              <span style={{ fontSize: '1.4rem' }}>😊</span>
+              <span style={{ color: '#00C9A7', fontWeight: 800, fontSize: '0.85rem' }}>מצב רוח</span>
             </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '4px' }}>מצוין</div>
-              <p style={{ color: '#666', fontSize: '0.75rem' }}>סטטוס יומי</p>
+            <div>
+              <div style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '4px' }}>מצוין</div>
+              <p style={{ color: '#666', fontSize: '0.8rem', fontWeight: 600 }}>סטטוס יומי</p>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '12px', color: '#8E8E93', fontSize: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '24px', color: '#8E8E93', fontSize: '0.75rem', fontWeight: 700 }}>
               <span>🕒</span> עודכן לפני שעה
             </div>
           </div>
 
           {/* Records Card */}
-          <div className="card" style={{ padding: '24px', borderRadius: '32px', marginBottom: 0, display: 'flex', flexDirection: 'column', height: '100%', minHeight: '160px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-              <span style={{ fontSize: '1.2rem' }}>📅</span>
-              <span style={{ color: 'var(--secondary)', fontWeight: 700, fontSize: '0.85rem' }}>תיעודים</span>
+          <div className="card" style={{ padding: '24px', borderRadius: '32px', marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+              <span style={{ fontSize: '1.4rem' }}>📅</span>
+              <span style={{ color: 'var(--secondary)', fontWeight: 800, fontSize: '0.85rem' }}>תיעודים</span>
             </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '4px' }}>{weekCount}</div>
-              <p style={{ color: '#666', fontSize: '0.75rem' }}>אירועים השבוע</p>
+            <div>
+              <div style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '4px' }}>{weekCount}</div>
+              <p style={{ color: '#666', fontSize: '0.8rem', fontWeight: 600 }}>אירועים השבוע</p>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '12px', color: '#00C9A7', fontSize: '0.75rem', fontWeight: 700 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '24px', color: '#00C9A7', fontSize: '0.75rem', fontWeight: 800 }}>
               📈 +20%
             </div>
           </div>
 
           {/* Stress Card */}
-          <div className="card" style={{ padding: '24px', borderRadius: '32px', marginBottom: 0, display: 'flex', flexDirection: 'column', height: '100%', minHeight: '160px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-              <span style={{ fontSize: '1.2rem' }}>⚡</span>
-              <span style={{ color: 'var(--secondary)', fontWeight: 700, fontSize: '0.85rem' }}>רעף</span>
+          <div className="card" style={{ padding: '24px', borderRadius: '32px', marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+              <span style={{ fontSize: '1.4rem' }}>⚡</span>
+              <span style={{ color: 'var(--secondary)', fontWeight: 800, fontSize: '0.85rem' }}>רעף</span>
             </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '4px' }}>5</div>
-              <p style={{ color: '#666', fontSize: '0.75rem' }}>ימי רצף</p>
+            <div>
+              <div style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '4px' }}>5</div>
+              <p style={{ color: '#666', fontSize: '0.8rem', fontWeight: 600 }}>ימי רצף</p>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '12px', color: 'var(--secondary)', fontSize: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '24px', color: 'var(--secondary)', fontSize: '0.75rem', fontWeight: 700 }}>
               ⭐ שיא אישי: 12
             </div>
           </div>
 
           {/* Insights Card */}
-          <div className="card" style={{ padding: '24px', borderRadius: '32px', marginBottom: 0, display: 'flex', flexDirection: 'column', height: '100%', minHeight: '160px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-              <span style={{ fontSize: '1.2rem' }}>💡</span>
-              <span style={{ color: '#FFA500', fontWeight: 700, fontSize: '0.85rem' }}>תובנות</span>
+          <div className="card" style={{ padding: '24px', borderRadius: '32px', marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+              <span style={{ fontSize: '1.4rem' }}>💡</span>
+              <span style={{ color: '#FFA500', fontWeight: 800, fontSize: '0.85rem' }}>תובנות</span>
             </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '4px' }}>{unreadInsights}</div>
-              <p style={{ color: '#666', fontSize: '0.75rem' }}>תובנות חדשות</p>
+            <div>
+              <div style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '4px' }}>{unreadInsights}</div>
+              <p style={{ color: '#666', fontSize: '0.8rem', fontWeight: 600 }}>תובנות חדשות</p>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '12px', color: 'var(--secondary)', fontSize: '0.75rem', fontWeight: 700 }}>
-              + 1 מהיום
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '24px', color: 'var(--secondary)', fontSize: '0.75rem', fontWeight: 800 }}>
+              ✨ + 1 מהיום
             </div>
           </div>
         </div>

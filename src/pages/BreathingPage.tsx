@@ -160,7 +160,7 @@ export default function BreathingPage() {
               fontWeight: 900,
               width: '100%',
               boxShadow: '0 12px 32px rgba(127, 19, 236, 0.3)',
-              marginBottom: fromEvent ? '12px' : '0'
+              marginBottom: '12px'
             }} onClick={start}>
               התחל תרגול
             </button>
@@ -168,11 +168,14 @@ export default function BreathingPage() {
               <button className="btn-ghost" style={{
                 width: '100%',
                 padding: '16px',
-                fontWeight: 800,
+                fontWeight: 900,
                 color: '#8E8E93',
-                fontSize: '1rem'
+                fontSize: '1.1rem',
+                border: '1px solid #E0E0E0',
+                borderRadius: '24px',
+                cursor: 'pointer'
               }} onClick={() => navigate('/')}>
-                דלג על התרגול
+                דלג על הנשימה
               </button>
             )}
           </div>
