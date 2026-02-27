@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCheckins } from '../hooks/useCheckins';
-import { MOOD_EMOJIS, ACTIVITY_OPTIONS } from '../utils/constants';
+import { MOOD_EMOJIS, INFLUENCE_OPTIONS } from '../utils/constants';
 
 export default function CheckinPage() {
   const { user } = useAuth();
@@ -13,13 +13,15 @@ export default function CheckinPage() {
   const checkinType = hour < 14 ? 'morning' : 'evening';
 
   const [mood, setMood] = useState(3);
-  const [energy] = useState(3);
-  const [sleepQuality] = useState(3);
-  const [sleepHours] = useState(7);
-  const [stress] = useState(3);
-  const [activity, setActivity] = useState('');
+  const [influences, setInfluences] = useState<string[]>([]);
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
+
+  const toggleInfluence = (value: string) => {
+    setInfluences(prev =>
+      prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
+    );
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -27,11 +29,11 @@ export default function CheckinPage() {
       await createCheckin({
         checkin_type: checkinType,
         mood,
-        energy_level: energy,
-        sleep_quality: sleepQuality,
-        sleep_hours: sleepHours,
-        stress_level: stress,
-        physical_activity: activity,
+        energy_level: 3,
+        sleep_quality: 3,
+        sleep_hours: 7,
+        stress_level: 3,
+        physical_activity: influences.join(', '),
         notes,
       });
       navigate('/');
@@ -43,171 +45,231 @@ export default function CheckinPage() {
   };
 
   return (
-    <div className="page" style={{
-      background: 'var(--bg-warm)',
+    <div style={{
+      position: 'relative',
+      display: 'flex',
       minHeight: '100vh',
-      paddingBottom: '120px'
+      width: '100%',
+      flexDirection: 'column',
+      maxWidth: 'var(--max-width)',
+      margin: '0 auto',
+      overflow: 'hidden',
+      background: 'radial-gradient(circle at top right, #e0e7ff 0%, #f6f6f8 100%)',
     }}>
-      {/* Navigation Header */}
+      {/* Top Navigation */}
       <div style={{
         display: 'flex',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '32px',
-        paddingTop: '8px'
-      }}>
-        <div style={{
-          width: '44px',
-          height: '44px',
-          borderRadius: '12px',
-          background: 'white',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
-        }}>
-          <span style={{ fontSize: '1.2rem' }}>📅</span>
-        </div>
-        <span style={{ fontSize: '1.1rem', fontWeight: 900 }}>MindTrack</span>
-        <div style={{
-          width: '44px',
-          height: '44px',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '1.2rem',
-          cursor: 'pointer'
-        }} onClick={() => navigate('/')}>✕</div>
-      </div>
-
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <h1 style={{ fontSize: '2.4rem', fontWeight: 900, marginBottom: '8px' }}>איך ההרגשה שלך?</h1>
-        <p style={{ color: '#666', fontSize: '1rem' }}>קח רגע לעצמך ובדוק איך אתה מרגיש עכשיו</p>
-      </div>
-
-      {/* Mood Selector (Horizontal Circles) */}
-      <div style={{
-        display: 'flex',
+        padding: '16px',
+        paddingBottom: '8px',
         justifyContent: 'space-between',
-        marginBottom: '48px',
-        padding: '0 8px'
       }}>
-        {MOOD_EMOJIS.map(m => (
-          <div key={m.value} style={{ textAlign: 'center' }}>
-            <button
-              onClick={() => setMood(m.value)}
-              style={{
-                width: '74px',
-                height: '74px',
-                borderRadius: '50%',
-                border: mood === m.value ? '2px solid var(--secondary)' : '1px solid #EEE',
-                background: mood === m.value ? 'white' : '#F9F9FC',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '2.5rem',
-                cursor: 'pointer',
-                marginBottom: '8px',
-                transition: 'all 0.3s ease',
-                boxShadow: mood === m.value ? '0 8px 20px rgba(42, 25, 230, 0.15)' : 'none'
-              }}
-            >
-              {m.emoji}
-            </button>
-            <span style={{
-              fontSize: '0.8rem',
-              fontWeight: 700,
-              color: mood === m.value ? 'var(--secondary)' : '#666'
-            }}>{m.label}</span>
-          </div>
-        ))}
-      </div>
-
-      <h2 style={{ fontSize: '1.2rem', fontWeight: 900, marginBottom: '24px', textAlign: 'center' }}>מה השפיע על מצב הרוח שלך היום?</h2>
-
-      {/* Activity Chips (Pills) */}
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        gap: '12px',
-        marginBottom: '48px'
-      }}>
-        {ACTIVITY_OPTIONS.map(a => (
-          <button
-            key={a.value}
-            onClick={() => setActivity(a.value)}
-            style={{
-              padding: '12px 24px',
-              borderRadius: '24px',
-              border: 'none',
-              background: activity === a.value ? 'var(--secondary-light)' : '#F5F5F9',
-              color: activity === a.value ? 'var(--secondary)' : '#333',
-              fontSize: '0.95rem',
-              fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              outline: activity === a.value ? '2px solid var(--secondary)' : 'none'
-            }}
-          >
-            <span style={{ fontSize: '1.2rem' }}>{a.icon}</span>
-            {a.label}
-          </button>
-        ))}
-        <button style={{
-          padding: '12px 24px',
-          borderRadius: '24px',
-          border: 'none',
-          background: '#F5F5F9',
-          color: '#333',
-          fontSize: '0.95rem',
-          fontWeight: 700,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          cursor: 'pointer'
-        }}>
-          <span style={{ fontSize: '1.2rem' }}>+</span>
-          אחר
-        </button>
-      </div>
-
-      {/* Notes Section */}
-      <div style={{ marginBottom: '48px' }}>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 900, marginBottom: '16px', textAlign: 'center' }}>הערות נוספות (אופציונלי)</h3>
-        <textarea
-          className="input"
-          placeholder="איך עבר היום שלך?"
-          value={notes}
-          onChange={e => setNotes(e.target.value)}
-          rows={4}
+        <div
+          onClick={() => navigate('/')}
           style={{
-            borderRadius: '32px',
-            padding: '24px',
-            border: 'none',
-            background: '#F9F9FC',
-            boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
-            fontSize: '1.05rem'
+            display: 'flex',
+            width: '48px',
+            height: '48px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            flexShrink: 0,
           }}
-        />
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>close</span>
+        </div>
+        <h2 style={{
+          fontSize: '1.125rem',
+          fontWeight: 700,
+          lineHeight: 1.3,
+          letterSpacing: '-0.3px',
+          flex: 1,
+          textAlign: 'center',
+        }}>MindTrack</h2>
+        <div style={{ display: 'flex', width: '48px', alignItems: 'center', justifyContent: 'flex-end' }}>
+          <button style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '50%',
+            height: '48px',
+            width: '48px',
+            background: 'rgba(255,255,255,0.5)',
+            color: 'var(--primary)',
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+          }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>calendar_month</span>
+          </button>
+        </div>
       </div>
 
-      <button className="btn" onClick={handleSave} disabled={saving} style={{
-        background: 'var(--secondary)',
-        color: 'white',
-        padding: '20px',
-        borderRadius: '32px',
-        fontSize: '1.3rem',
-        fontWeight: 900,
-        boxShadow: '0 12px 32px rgba(42, 25, 230, 0.3)',
-        width: '100%'
+      {/* Main Content */}
+      <main style={{ flex: 1, padding: '24px 16px' }}>
+        {/* Header Title */}
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <h1 style={{
+            fontSize: '1.875rem',
+            fontWeight: 700,
+            lineHeight: 1.3,
+            marginBottom: '8px',
+          }}>איך ההרגשה שלך?</h1>
+          <p style={{
+            color: 'var(--text-light)',
+            fontSize: '0.875rem',
+          }}>קח רגע לעצמך ובדוק איך אתה מרגיש עכשיו</p>
+        </div>
+
+        {/* Mood Selector */}
+        <div className="no-scrollbar" style={{
+          display: 'flex',
+          flexWrap: 'nowrap',
+          overflowX: 'auto',
+          gap: '16px',
+          padding: '16px 0',
+          justifyContent: 'center',
+        }}>
+          {MOOD_EMOJIS.map(m => (
+            <div key={m.value} style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '12px',
+              minWidth: '80px',
+            }}>
+              <div
+                onClick={() => setMood(m.value)}
+                className="glass"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '80px',
+                  height: '80px',
+                  borderRadius: '50%',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  outline: mood === m.value ? '2px solid var(--primary)' : 'none',
+                  outlineOffset: '0px',
+                }}
+              >
+                <span style={{ fontSize: '2.25rem' }}>{m.emoji}</span>
+              </div>
+              <span style={{
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                color: mood === m.value ? 'var(--primary)' : 'var(--text-secondary)',
+              }}>{m.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Influences Section */}
+        <div style={{ marginTop: '40px' }}>
+          <h3 style={{
+            fontSize: '1.125rem',
+            fontWeight: 700,
+            lineHeight: 1.3,
+            marginBottom: '16px',
+          }}>מה השפיע על מצב הרוח שלך היום?</h3>
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '12px',
+          }}>
+            {INFLUENCE_OPTIONS.map(opt => {
+              const isSelected = influences.includes(opt.value);
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => toggleInfluence(opt.value)}
+                  className="glass"
+                  style={{
+                    display: 'flex',
+                    height: '44px',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    borderRadius: '16px',
+                    padding: '0 20px',
+                    border: isSelected ? '1px solid var(--primary)' : undefined,
+                    background: isSelected ? 'rgba(42,25,230,0.1)' : undefined,
+                    color: isSelected ? 'var(--primary)' : 'var(--text-secondary)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>{opt.icon}</span>
+                  <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>{opt.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Journal Note Area */}
+        <div style={{ marginTop: '32px' }}>
+          <h3 style={{
+            fontSize: '1.125rem',
+            fontWeight: 700,
+            lineHeight: 1.3,
+            marginBottom: '16px',
+          }}>הערות נוספות (אופציונלי)</h3>
+          <textarea
+            className="glass"
+            placeholder="איך עבר היום שלך?"
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+            rows={4}
+            style={{
+              width: '100%',
+              borderRadius: '16px',
+              padding: '16px',
+              border: 'none',
+              fontSize: '0.875rem',
+              fontFamily: 'inherit',
+              color: 'var(--text-primary)',
+              outline: 'none',
+              resize: 'vertical',
+              minHeight: '100px',
+            }}
+          />
+        </div>
+      </main>
+
+      {/* Fixed Bottom Button */}
+      <div style={{
+        position: 'sticky',
+        bottom: 0,
+        padding: '16px',
+        background: 'linear-gradient(to top, #f6f6f8 60%, transparent)',
       }}>
-        {saving ? '⏳ שומר...' : 'שמור תיעוד'}
-      </button>
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          style={{
+            width: '100%',
+            background: 'var(--primary)',
+            color: 'white',
+            padding: '16px',
+            borderRadius: '16px',
+            fontWeight: 700,
+            fontSize: '1.125rem',
+            border: 'none',
+            cursor: saving ? 'not-allowed' : 'pointer',
+            opacity: saving ? 0.7 : 1,
+            boxShadow: '0 10px 30px -10px rgba(42, 25, 230, 0.5)',
+            transition: 'all 0.15s ease',
+            fontFamily: 'inherit',
+          }}
+        >
+          {saving ? 'שומר...' : 'שמור תיעוד'}
+        </button>
+        <div style={{ height: '24px' }} /> {/* Safe area spacing */}
+      </div>
     </div>
   );
 }

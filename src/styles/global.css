@@ -1,43 +1,45 @@
-/* ===== MindTrack Web — Redesign: Warm, Friendly, Clean ===== */
+/* ===== MindTrack Web — Redesign: Modern Glass Morphism ===== */
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  /* — Modern, calming palette — */
-  /* — Exact Stitch High-Fidelity Palette — */
-  --primary: #7f13ec;
-  /* Vibrant Stitch Purple */
-  --primary-dark: #660bc4;
-  --primary-light: #f3e8ff;
-  --primary-glow: rgba(127, 19, 236, 0.2);
+  /* — Primary Blue (main design color) — */
+  --primary: #2a19e6;
+  --primary-dark: #2010c4;
+  --primary-light: #e0e7ff;
+  --primary-glow: rgba(42, 25, 230, 0.2);
 
+  /* — Secondary (kept for backward compat) — */
   --secondary: #2a19e6;
-  /* Deep Blue from Register Screen */
-  --secondary-light: #e8eaff;
+  --secondary-light: #e0e7ff;
+
+  /* — Purple (for Event Log page) — */
+  --purple: #8c2bee;
+  --purple-light: #f3e8ff;
+  --purple-glow: rgba(140, 43, 238, 0.2);
 
   --accent: #FF6B9D;
-  /* Soft Coral/Pink */
   --accent-light: #FFF0F6;
 
   --emergency: #FF6B6B;
   --emergency-glow: rgba(255, 107, 107, 0.2);
 
   /* — Surfaces — */
-  --bg: #F9F7FF;
-  --bg-warm: linear-gradient(180deg, #F3EFFF 0%, #FFFFFF 100%);
+  --bg: #f6f6f8;
+  --bg-warm: radial-gradient(circle at top right, #e0e7ff 0%, #f6f6f8 100%);
   --bg-card: rgba(255, 255, 255, 0.95);
   --bg-card-solid: #FFFFFF;
-  --glass: rgba(255, 255, 255, 0.8);
-  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
 
   /* — Text — */
-  --text-primary: #000000;
-  --text-secondary: #4A4A4A;
-  --text-light: #8E8E93;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-light: #94a3b8;
 
-  /* — Shape (ROUND_TWELVE style) — */
-  --radius: 32px;
-  --radius-sm: 20px;
-  --radius-lg: 40px;
+  /* — Shape — */
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-lg: 24px;
   --radius-full: 9999px;
   --max-width: 480px;
 
@@ -48,9 +50,19 @@
   --warning: #FFB84D;
   --warning-light: #FFF8EE;
 
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 8px 24px rgba(127, 19, 236, 0.12);
-  --shadow-lg: 0 16px 40px rgba(127, 19, 236, 0.15);
+  --shadow-md: 0 8px 24px rgba(42, 25, 230, 0.1);
+  --shadow-lg: 0 16px 40px rgba(42, 25, 230, 0.12);
+  --shadow-glow: 0 8px 24px rgba(42, 25, 230, 0.25);
+
+  /* — Borders (backward compat) — */
+  --border: #e2e8f0;
+  --border-soft: #f1f5f9;
+
+  /* — Accent extras — */
+  --accent-dark: #059669;
 }
 
 * {
@@ -66,7 +78,7 @@ html {
 }
 
 body {
-  font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg-warm);
   color: var(--text-primary);
   min-height: 100vh;
@@ -402,7 +414,7 @@ input[type="range"] {
   width: 100%;
   height: 8px;
   -webkit-appearance: none;
-  background: linear-gradient(90deg, var(--primary-light), var(--border));
+  background: linear-gradient(to right, var(--primary-light), var(--border));
   border-radius: 4px;
   outline: none;
   direction: ltr;
@@ -1258,4 +1270,36 @@ input[type="range"]::-webkit-slider-thumb:hover {
 ::selection {
   background: var(--primary-light);
   color: var(--primary);
+}
+
+/* ===== Glass Morphism ===== */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ===== Material Symbols ===== */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  user-select: none;
+}
+
+.material-symbols-outlined.fill-1 {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ===== Soft Glow Utility ===== */
+.soft-glow {
+  box-shadow: 0 0 20px rgba(42, 25, 230, 0.2);
+}
+
+/* ===== No Scrollbar ===== */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

@@ -3,15 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getEventCount } from '../api/events';
 import { getInsights } from '../api/insights';
-import { Wind, BarChart3, Brain } from 'lucide-react';
 
 function getGreeting(): string {
   const hour = new Date().getHours();
-  if (hour < 6) return 'לילה טוב 🌙';
-  if (hour < 12) return 'בוקר טוב ☀️';
-  if (hour < 17) return 'צהריים טובים 🌤️';
-  if (hour < 21) return 'ערב טוב 🌇';
-  return 'לילה טוב 🌙';
+  if (hour < 6) return 'לילה טוב';
+  if (hour < 12) return 'בוקר טוב';
+  if (hour < 17) return 'צהריים טובים';
+  if (hour < 21) return 'ערב טוב';
+  return 'לילה טוב';
 }
 
 export default function HomePage() {
@@ -31,173 +30,313 @@ export default function HomePage() {
   const displayName = profile?.display_name || 'משתמש';
 
   return (
-    <div className="page" style={{ paddingBottom: '120px' }}>
-      {/* Header with User Profile */}
+    <div style={{
+      position: 'relative',
+      display: 'flex',
+      minHeight: '100vh',
+      width: '100%',
+      flexDirection: 'column',
+      maxWidth: 'var(--max-width)',
+      margin: '0 auto',
+      overflow: 'hidden',
+      paddingBottom: '96px',
+      background: 'radial-gradient(circle at top right, #e0e7ff 0%, #f6f6f8 100%)',
+    }}>
+      {/* Top Header */}
       <div style={{
         display: 'flex',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '32px',
-        paddingTop: '8px'
+        padding: '24px',
+        justifyContent: 'space-between',
       }}>
-        <div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>{getGreeting()},</p>
-          <h1 style={{ fontSize: '1.6rem', fontWeight: 900 }}>שלום, {displayName}</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, rgba(42,25,230,0.2), #e0e7ff)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            overflow: 'hidden',
+            border: '2px solid white',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+            flexShrink: 0,
+          }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '24px', color: 'var(--primary)' }}>person</span>
+          </div>
+          <div>
+            <p style={{ color: 'var(--text-light)', fontSize: '0.875rem', fontWeight: 500 }}>{getGreeting()},</p>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, lineHeight: 1.3, letterSpacing: '-0.3px' }}>שלום, {displayName}</h2>
+          </div>
         </div>
-        <div style={{
-          width: '50px',
-          height: '50px',
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, #FFD6C1, #FFB997)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '1.5rem',
-          border: '2px solid white',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-        }}>👤</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button style={{
+            display: 'flex',
+            width: '40px',
+            height: '40px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '50%',
+            background: 'white',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+            border: 'none',
+            cursor: 'pointer',
+            color: 'var(--text-secondary)',
+          }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>notifications</span>
+          </button>
+        </div>
       </div>
 
       {/* Main Action Button */}
-      <button className="btn" onClick={() => navigate('/event-log')} style={{
-        background: 'var(--secondary)',
-        color: 'white',
-        borderRadius: '32px',
-        padding: '24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '12px',
-        fontSize: '1.3rem',
-        fontWeight: 900,
-        boxShadow: '0 12px 32px rgba(42, 25, 230, 0.3)',
-        marginBottom: '40px',
-        width: '100%'
-      }}>
-        <div style={{
-          width: '32px',
-          height: '32px',
-          background: 'white',
-          borderRadius: '50%',
+      <div style={{ padding: '0 24px 16px' }}>
+        <button onClick={() => navigate('/event-log')} style={{
+          width: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'var(--secondary)',
-          fontSize: '1.5rem'
-        }}>+</div>
-        תיעוד אירוע
-      </button>
+          gap: '12px',
+          padding: '20px',
+          borderRadius: '16px',
+          background: 'var(--primary)',
+          color: 'white',
+          fontWeight: 700,
+          fontSize: '1.125rem',
+          border: 'none',
+          cursor: 'pointer',
+          boxShadow: '0 10px 30px -10px rgba(42, 25, 230, 0.5)',
+          transition: 'transform 0.15s ease',
+          fontFamily: 'inherit',
+        }}>
+          <span className="material-symbols-outlined fill-1" style={{ fontSize: '24px' }}>add_circle</span>
+          <span>תיעוד אירוע</span>
+        </button>
+      </div>
 
-      {/* Features Grid */}
-      <div style={{ marginBottom: '32px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 900 }}>סיכום שבועי</h2>
-          <button style={{
-            fontSize: '0.85rem',
-            fontWeight: 800,
-            padding: '6px 14px',
-            background: 'white',
-            border: '2px solid black',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}>הצג הכל</button>
+      {/* Weekly Summary Section */}
+      <div style={{ padding: '16px 24px' }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '16px',
+        }}>
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700 }}>סיכום שבועי</h3>
+          <span style={{ color: 'var(--primary)', fontSize: '0.875rem', fontWeight: 600, cursor: 'pointer' }}>הצג הכל</span>
         </div>
 
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
-          gridAutoRows: '1fr',
-          gap: '16px'
+          gap: '16px',
         }}>
-          {/* Mood Card */}
-          <div className="card" style={{ padding: '24px', borderRadius: '32px', marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
-              <span style={{ fontSize: '1.4rem' }}>😊</span>
-              <span style={{ color: '#00C9A7', fontWeight: 800, fontSize: '0.85rem' }}>מצב רוח</span>
+          {/* Stats Card — Records */}
+          <div style={{
+            background: 'white',
+            padding: '20px',
+            borderRadius: '16px',
+            border: '1px solid #f1f5f9',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary)', marginBottom: '4px' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>event_note</span>
+              <span style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>תיעודים</span>
             </div>
-            <div>
-              <div style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '4px' }}>מצוין</div>
-              <p style={{ color: '#666', fontSize: '0.8rem', fontWeight: 600 }}>סטטוס יומי</p>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '24px', color: '#8E8E93', fontSize: '0.75rem', fontWeight: 700 }}>
-              <span>🕒</span> עודכן לפני שעה
-            </div>
-          </div>
-
-          {/* Records Card */}
-          <div className="card" style={{ padding: '24px', borderRadius: '32px', marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
-              <span style={{ fontSize: '1.4rem' }}>📅</span>
-              <span style={{ color: 'var(--secondary)', fontWeight: 800, fontSize: '0.85rem' }}>תיעודים</span>
-            </div>
-            <div>
-              <div style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '4px' }}>{weekCount}</div>
-              <p style={{ color: '#666', fontSize: '0.8rem', fontWeight: 600 }}>אירועים השבוע</p>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '24px', color: '#00C9A7', fontSize: '0.75rem', fontWeight: 800 }}>
-              📈 +20%
+            <p style={{ fontSize: '1.5rem', fontWeight: 700 }}>{weekCount}</p>
+            <p style={{ color: 'var(--text-light)', fontSize: '0.75rem' }}>אירועים השבוע</p>
+            <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', color: '#059669', fontSize: '0.75rem', fontWeight: 700 }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>trending_up</span>
+              <span style={{ marginRight: '4px' }}>20%+</span>
             </div>
           </div>
 
-          {/* Stress Card */}
-          <div className="card" style={{ padding: '24px', borderRadius: '32px', marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
-              <span style={{ fontSize: '1.4rem' }}>⚡</span>
-              <span style={{ color: 'var(--secondary)', fontWeight: 800, fontSize: '0.85rem' }}>רעף</span>
+          {/* Stats Card — Mood */}
+          <div style={{
+            background: 'white',
+            padding: '20px',
+            borderRadius: '16px',
+            border: '1px solid #f1f5f9',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981', marginBottom: '4px' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>mood</span>
+              <span style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>מצב רוח</span>
             </div>
-            <div>
-              <div style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '4px' }}>5</div>
-              <p style={{ color: '#666', fontSize: '0.8rem', fontWeight: 600 }}>ימי רצף</p>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '24px', color: 'var(--secondary)', fontSize: '0.75rem', fontWeight: 700 }}>
-              ⭐ שיא אישי: 12
+            <p style={{ fontSize: '1.5rem', fontWeight: 700 }}>מצוין</p>
+            <p style={{ color: 'var(--text-light)', fontSize: '0.75rem' }}>סטטוס יומי</p>
+            <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', color: 'var(--text-light)', fontSize: '0.75rem' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>schedule</span>
+              <span style={{ marginRight: '4px' }}>עודכן לפני שעה</span>
             </div>
           </div>
 
-          {/* Insights Card */}
-          <div className="card" style={{ padding: '24px', borderRadius: '32px', marginBottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
-              <span style={{ fontSize: '1.4rem' }}>💡</span>
-              <span style={{ color: '#FFA500', fontWeight: 800, fontSize: '0.85rem' }}>תובנות</span>
+          {/* Stats Card — Insights */}
+          <div style={{
+            background: 'white',
+            padding: '20px',
+            borderRadius: '16px',
+            border: '1px solid #f1f5f9',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#f59e0b', marginBottom: '4px' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>lightbulb</span>
+              <span style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>תובנות</span>
             </div>
-            <div>
-              <div style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '4px' }}>{unreadInsights}</div>
-              <p style={{ color: '#666', fontSize: '0.8rem', fontWeight: 600 }}>תובנות חדשות</p>
+            <p style={{ fontSize: '1.5rem', fontWeight: 700 }}>{unreadInsights}</p>
+            <p style={{ color: 'var(--text-light)', fontSize: '0.75rem' }}>תובנות חדשות</p>
+            <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', color: 'var(--primary)', fontSize: '0.75rem', fontWeight: 700 }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>add</span>
+              <span style={{ marginRight: '4px' }}>1 מהיום</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '24px', color: 'var(--secondary)', fontSize: '0.75rem', fontWeight: 800 }}>
-              ✨ + 1 מהיום
+          </div>
+
+          {/* Stats Card — Streak */}
+          <div style={{
+            background: 'white',
+            padding: '20px',
+            borderRadius: '16px',
+            border: '1px solid #f1f5f9',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#6366f1', marginBottom: '4px' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>bolt</span>
+              <span style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>רצף</span>
+            </div>
+            <p style={{ fontSize: '1.5rem', fontWeight: 700 }}>5</p>
+            <p style={{ color: 'var(--text-light)', fontSize: '0.75rem' }}>ימי רצף</p>
+            <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', color: '#818cf8', fontSize: '0.75rem' }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>stars</span>
+              <span style={{ marginRight: '4px' }}>שיא אישי: 12</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Quick Actions Bar */}
-      <div style={{
-        background: 'linear-gradient(135deg, #E0E8FF, #F3F6FF)',
-        borderRadius: '32px',
-        padding: '24px',
-        marginBottom: '24px'
-      }}>
-        <h2 style={{ fontSize: '1.2rem', fontWeight: 900, marginBottom: '20px', textAlign: 'center' }}>פעולות מהירות</h2>
-        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-          <div style={{ textAlign: 'center' }} onClick={() => navigate('/breathing')}>
-            <div style={{ width: '60px', height: '60px', background: 'white', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px', margin: '0 auto', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-              <Wind size={24} color="var(--secondary)" />
+      {/* Quick Actions Card */}
+      <div style={{ padding: '16px 24px' }}>
+        <div style={{
+          background: 'linear-gradient(to right, #e0e7ff, #ecfdf5)',
+          padding: '24px',
+          borderRadius: '24px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+          position: 'relative',
+          overflow: 'hidden',
+        }}>
+          <div style={{ position: 'relative', zIndex: 10 }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '16px' }}>פעולות מהירות</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <button onClick={() => navigate('/breathing')} style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}>
+                <div className="glass" style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--primary)',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '28px' }}>air</span>
+                </div>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700 }}>נשימה</span>
+              </button>
+
+              <button onClick={() => navigate('/dashboard')} style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}>
+                <div className="glass" style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--primary)',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '28px' }}>dashboard</span>
+                </div>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700 }}>לוח בקרה</span>
+              </button>
+
+              <button onClick={() => navigate('/insights')} style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}>
+                <div className="glass" style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--primary)',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: '28px' }}>psychology</span>
+                </div>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700 }}>תובנות</span>
+              </button>
             </div>
-            <p style={{ fontSize: '0.8rem', fontWeight: 700 }}>נשימה</p>
           </div>
-          <div style={{ textAlign: 'center' }} onClick={() => navigate('/dashboard')}>
-            <div style={{ width: '60px', height: '60px', background: 'white', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px', margin: '0 auto', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-              <BarChart3 size={24} color="var(--secondary)" />
-            </div>
-            <p style={{ fontSize: '0.8rem', fontWeight: 700 }}>לוח בקרה</p>
-          </div>
-          <div style={{ textAlign: 'center' }} onClick={() => navigate('/insights')}>
-            <div style={{ width: '60px', height: '60px', background: 'white', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px', margin: '0 auto', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-              <Brain size={24} color="var(--secondary)" />
-            </div>
-            <p style={{ fontSize: '0.8rem', fontWeight: 700 }}>תובנות</p>
-          </div>
+          {/* Decorative blurs */}
+          <div style={{
+            position: 'absolute',
+            top: '-40px',
+            left: '-40px',
+            width: '128px',
+            height: '128px',
+            background: 'rgba(255,255,255,0.2)',
+            borderRadius: '50%',
+            filter: 'blur(32px)',
+            pointerEvents: 'none',
+          }} />
+          <div style={{
+            position: 'absolute',
+            bottom: '-40px',
+            right: '-40px',
+            width: '128px',
+            height: '128px',
+            background: 'rgba(42,25,230,0.1)',
+            borderRadius: '50%',
+            filter: 'blur(32px)',
+            pointerEvents: 'none',
+          }} />
         </div>
       </div>
     </div>
