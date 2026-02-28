@@ -172,6 +172,7 @@ export default function EventLogPage() {
         sleep_hours: 0,
         stress_level: 0,
         notes,
+        started_at: selectedDate.toISOString(),
       });
       navigate('/breathing', { state: { fromEvent: true } });
     } catch {

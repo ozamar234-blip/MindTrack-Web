@@ -49,6 +49,7 @@ export interface EventFormData {
   sleep_hours: number;
   stress_level: number;
   notes: string;
+  started_at?: string;
 }
 
 export interface DailyCheckin {

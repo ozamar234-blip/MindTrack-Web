@@ -2,13 +2,14 @@ import { supabase } from './supabase';
 import type { EventFormData, HealthEvent } from '../types';
 
 export async function createEvent(userId: string, formData: EventFormData): Promise<HealthEvent> {
-  const now = new Date();
+  const eventDate = formData.started_at ? new Date(formData.started_at) : new Date();
+  const { started_at: _startedAt, ...rest } = formData;
   const { data, error } = await supabase.from('events').insert({
     user_id: userId,
-    ...formData,
-    day_of_week: now.getDay(),
-    hour_of_day: now.getHours(),
-    started_at: now.toISOString(),
+    ...rest,
+    day_of_week: eventDate.getDay(),
+    hour_of_day: eventDate.getHours(),
+    started_at: eventDate.toISOString(),
   }).select().single();
   if (error) throw error;
   return data;
