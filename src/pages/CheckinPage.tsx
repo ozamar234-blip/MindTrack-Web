@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useCheckins } from '../hooks/useCheckins';
 import { MOOD_EMOJIS, INFLUENCE_OPTIONS } from '../utils/constants';
@@ -57,133 +58,107 @@ export default function CheckinPage() {
       background: 'radial-gradient(circle at top right, #e0e7ff 0%, #f6f6f8 100%)',
     }}>
       {/* Top Navigation */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        padding: '16px',
-        paddingBottom: '8px',
-        justifyContent: 'space-between',
-      }}>
-        <div
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          padding: '16px',
+          paddingBottom: '8px',
+          justifyContent: 'space-between',
+        }}
+      >
+        <motion.div
+          whileTap={{ scale: 0.85 }}
           onClick={() => navigate('/')}
-          style={{
-            display: 'flex',
-            width: '48px',
-            height: '48px',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            flexShrink: 0,
-          }}
+          style={{ display: 'flex', width: '48px', height: '48px', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}
         >
           <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>close</span>
-        </div>
-        <h2 style={{
-          fontSize: '1.125rem',
-          fontWeight: 700,
-          lineHeight: 1.3,
-          letterSpacing: '-0.3px',
-          flex: 1,
-          textAlign: 'center',
-        }}>MindTrack</h2>
+        </motion.div>
+        <h2 style={{ fontSize: '1.125rem', fontWeight: 700, lineHeight: 1.3, letterSpacing: '-0.3px', flex: 1, textAlign: 'center' }}>MindTrack</h2>
         <div style={{ display: 'flex', width: '48px', alignItems: 'center', justifyContent: 'flex-end' }}>
-          <button style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '50%',
-            height: '48px',
-            width: '48px',
-            background: 'rgba(255,255,255,0.5)',
-            color: 'var(--primary)',
-            border: 'none',
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-          }}>
+          <motion.button
+            whileTap={{ scale: 0.85 }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', height: '48px', width: '48px', background: 'rgba(255,255,255,0.5)', color: 'var(--primary)', border: 'none', cursor: 'pointer' }}
+          >
             <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>calendar_month</span>
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Main Content */}
       <main style={{ flex: 1, padding: '24px 16px' }}>
         {/* Header Title */}
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <h1 style={{
-            fontSize: '1.875rem',
-            fontWeight: 700,
-            lineHeight: 1.3,
-            marginBottom: '8px',
-          }}>איך ההרגשה שלך?</h1>
-          <p style={{
-            color: 'var(--text-light)',
-            fontSize: '0.875rem',
-          }}>קח רגע לעצמך ובדוק איך אתה מרגיש עכשיו</p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          style={{ textAlign: 'center', marginBottom: '32px' }}
+        >
+          <h1 style={{ fontSize: '1.875rem', fontWeight: 700, lineHeight: 1.3, marginBottom: '8px' }}>איך ההרגשה שלך?</h1>
+          <p style={{ color: 'var(--text-light)', fontSize: '0.875rem' }}>קח רגע לעצמך ובדוק איך אתה מרגיש עכשיו</p>
+        </motion.div>
 
         {/* Mood Selector */}
-        <div className="no-scrollbar" style={{
-          display: 'flex',
-          flexWrap: 'nowrap',
-          overflowX: 'auto',
-          gap: '16px',
-          padding: '16px 0',
-          justifyContent: 'center',
-        }}>
-          {MOOD_EMOJIS.map(m => (
-            <div key={m.value} style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '12px',
-              minWidth: '80px',
-            }}>
-              <div
+        <div className="no-scrollbar" style={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto', gap: '16px', padding: '16px 0', justifyContent: 'center' }}>
+          {MOOD_EMOJIS.map((m, i) => (
+            <motion.div
+              key={m.value}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.15 + i * 0.06, type: 'spring', stiffness: 300, damping: 20 }}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', minWidth: '72px' }}
+            >
+              <motion.div
+                whileTap={{ scale: 0.88 }}
                 onClick={() => setMood(m.value)}
                 className="glass"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: '80px',
-                  height: '80px',
+                  width: '72px',
+                  height: '72px',
                   borderRadius: '50%',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                  boxShadow: mood === m.value ? '0 4px 16px rgba(42,25,230,0.2)' : '0 2px 8px rgba(0,0,0,0.05)',
                   cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  outline: mood === m.value ? '2px solid var(--primary)' : 'none',
+                  outline: mood === m.value ? '2.5px solid var(--primary)' : 'none',
                   outlineOffset: '0px',
+                  transition: 'box-shadow 0.2s, outline 0.2s',
                 }}
               >
-                <span style={{ fontSize: '2.25rem' }}>{m.emoji}</span>
-              </div>
+                <span style={{ fontSize: '2rem' }}>{m.emoji}</span>
+              </motion.div>
               <span style={{
-                fontSize: '0.75rem',
+                fontSize: '0.7rem',
                 fontWeight: 600,
                 color: mood === m.value ? 'var(--primary)' : 'var(--text-secondary)',
+                transition: 'color 0.2s',
               }}>{m.label}</span>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {/* Influences Section */}
-        <div style={{ marginTop: '40px' }}>
-          <h3 style={{
-            fontSize: '1.125rem',
-            fontWeight: 700,
-            lineHeight: 1.3,
-            marginBottom: '16px',
-          }}>מה השפיע על מצב הרוח שלך היום?</h3>
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '12px',
-          }}>
-            {INFLUENCE_OPTIONS.map(opt => {
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
+          style={{ marginTop: '40px' }}
+        >
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, lineHeight: 1.3, marginBottom: '16px' }}>מה השפיע על מצב הרוח שלך היום?</h3>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+            {INFLUENCE_OPTIONS.map((opt, i) => {
               const isSelected = influences.includes(opt.value);
               return (
-                <button
+                <motion.button
                   key={opt.value}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + i * 0.04 }}
+                  whileTap={{ scale: 0.92 }}
                   onClick={() => toggleInfluence(opt.value)}
                   className="glass"
                   style={{
@@ -198,56 +173,41 @@ export default function CheckinPage() {
                     background: isSelected ? 'rgba(42,25,230,0.1)' : undefined,
                     color: isSelected ? 'var(--primary)' : 'var(--text-secondary)',
                     cursor: 'pointer',
-                    transition: 'all 0.2s ease',
+                    transition: 'background 0.2s, border 0.2s, color 0.2s',
                     fontFamily: 'inherit',
                   }}
                 >
                   <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>{opt.icon}</span>
                   <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>{opt.label}</span>
-                </button>
+                </motion.button>
               );
             })}
           </div>
-        </div>
+        </motion.div>
 
         {/* Journal Note Area */}
-        <div style={{ marginTop: '32px' }}>
-          <h3 style={{
-            fontSize: '1.125rem',
-            fontWeight: 700,
-            lineHeight: 1.3,
-            marginBottom: '16px',
-          }}>הערות נוספות (אופציונלי)</h3>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55 }}
+          style={{ marginTop: '32px' }}
+        >
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, lineHeight: 1.3, marginBottom: '16px' }}>הערות נוספות (אופציונלי)</h3>
           <textarea
             className="glass"
             placeholder="איך עבר היום שלך?"
             value={notes}
             onChange={e => setNotes(e.target.value)}
             rows={4}
-            style={{
-              width: '100%',
-              borderRadius: '16px',
-              padding: '16px',
-              border: 'none',
-              fontSize: '0.875rem',
-              fontFamily: 'inherit',
-              color: 'var(--text-primary)',
-              outline: 'none',
-              resize: 'vertical',
-              minHeight: '100px',
-            }}
+            style={{ width: '100%', borderRadius: '16px', padding: '16px', border: 'none', fontSize: '0.875rem', fontFamily: 'inherit', color: 'var(--text-primary)', outline: 'none', resize: 'vertical', minHeight: '100px' }}
           />
-        </div>
+        </motion.div>
       </main>
 
       {/* Fixed Bottom Button */}
-      <div style={{
-        position: 'sticky',
-        bottom: 0,
-        padding: '16px',
-        background: 'linear-gradient(to top, #f6f6f8 60%, transparent)',
-      }}>
-        <button
+      <div style={{ position: 'sticky', bottom: 0, padding: '16px', background: 'linear-gradient(to top, #f6f6f8 60%, transparent)' }}>
+        <motion.button
+          whileTap={{ scale: 0.97 }}
           onClick={handleSave}
           disabled={saving}
           style={{
@@ -262,13 +222,12 @@ export default function CheckinPage() {
             cursor: saving ? 'not-allowed' : 'pointer',
             opacity: saving ? 0.7 : 1,
             boxShadow: '0 10px 30px -10px rgba(42, 25, 230, 0.5)',
-            transition: 'all 0.15s ease',
             fontFamily: 'inherit',
           }}
         >
           {saving ? 'שומר...' : 'שמור תיעוד'}
-        </button>
-        <div style={{ height: '24px' }} /> {/* Safe area spacing */}
+        </motion.button>
+        <div style={{ height: '24px' }} />
       </div>
     </div>
   );

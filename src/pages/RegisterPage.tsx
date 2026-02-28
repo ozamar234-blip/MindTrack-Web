@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useSignUp } from '../hooks/useAuth';
 
 export default function RegisterPage() {
@@ -37,40 +38,56 @@ export default function RegisterPage() {
       flexDirection: 'column',
     }}>
       {/* Header */}
-      <div style={{
-        padding: '24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '100%',
-      }}>
-        <div style={{
-          padding: '8px',
-          borderRadius: '50%',
-          background: 'rgba(255,255,255,0.5)',
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        style={{
+          padding: '24px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-        }} onClick={() => navigate(-1)}>
-          <span className="material-symbols-outlined">arrow_forward</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{
-            width: '32px',
-            height: '32px',
-            background: 'var(--primary)',
-            borderRadius: '8px',
+          justifyContent: 'space-between',
+          width: '100%',
+        }}
+      >
+        <motion.div
+          whileTap={{ scale: 0.85 }}
+          style={{
+            padding: '8px',
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.5)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-          }}>
+            cursor: 'pointer',
+            width: '40px',
+            height: '40px',
+          }}
+          onClick={() => navigate(-1)}
+        >
+          <span className="material-symbols-outlined">arrow_forward</span>
+        </motion.div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.1, type: 'spring' as const, stiffness: 300, damping: 20 }}
+            style={{
+              width: '32px',
+              height: '32px',
+              background: 'var(--primary)',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             <span className="material-symbols-outlined" style={{ color: 'white', fontSize: '20px' }}>psychology</span>
-          </div>
+          </motion.div>
           <span style={{ fontWeight: 700, fontSize: '1.25rem', letterSpacing: '-0.3px' }}>MindTrack</span>
         </div>
         <div style={{ width: '40px' }} />
-      </div>
+      </motion.div>
 
       {/* Form Card */}
       <div style={{
@@ -80,16 +97,26 @@ export default function RegisterPage() {
         flexDirection: 'column',
         justifyContent: 'center',
       }}>
-        <div style={{
-          background: 'rgba(255,255,255,0.7)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          border: '1px solid rgba(255,255,255,0.3)',
-          padding: '32px',
-          borderRadius: '24px',
-          boxShadow: '0 25px 50px -12px rgba(0,0,0,0.1)',
-        }}>
-          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.15, type: 'spring' as const, stiffness: 200, damping: 25 }}
+          style={{
+            background: 'rgba(255,255,255,0.7)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.3)',
+            padding: '32px',
+            borderRadius: '24px',
+            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.1)',
+          }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            style={{ textAlign: 'center', marginBottom: '32px' }}
+          >
             <h1 style={{
               fontSize: '1.875rem',
               fontWeight: 700,
@@ -99,26 +126,35 @@ export default function RegisterPage() {
             <p style={{
               color: 'var(--text-secondary)',
             }}>צרו חשבון כדי להתחיל לעקוב אחר השלווה הנפשית שלכם</p>
-          </div>
+          </motion.div>
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {(error || localError) && (
-              <div style={{
-                background: '#fef2f2',
-                color: '#dc2626',
-                padding: '12px 16px',
-                borderRadius: '12px',
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                textAlign: 'center',
-                border: '1px solid rgba(220,38,38,0.1)',
-              }}>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                style={{
+                  background: '#fef2f2',
+                  color: '#dc2626',
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  textAlign: 'center',
+                  border: '1px solid rgba(220,38,38,0.1)',
+                }}
+              >
                 {localError || error}
-              </div>
+              </motion.div>
             )}
 
             {/* Full Name */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
               <label style={{
                 fontSize: '0.875rem',
                 fontWeight: 600,
@@ -153,10 +189,15 @@ export default function RegisterPage() {
                   e.target.style.boxShadow = 'none';
                 }}
               />
-            </div>
+            </motion.div>
 
             {/* Email */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
               <label style={{
                 fontSize: '0.875rem',
                 fontWeight: 600,
@@ -192,10 +233,15 @@ export default function RegisterPage() {
                   e.target.style.boxShadow = 'none';
                 }}
               />
-            </div>
+            </motion.div>
 
             {/* Password */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
               <label style={{
                 fontSize: '0.875rem',
                 fontWeight: 600,
@@ -232,8 +278,9 @@ export default function RegisterPage() {
                     e.target.style.boxShadow = 'none';
                   }}
                 />
-                <button
+                <motion.button
                   type="button"
+                  whileTap={{ scale: 0.85 }}
                   onClick={() => setShowPassword(!showPassword)}
                   style={{
                     position: 'absolute',
@@ -251,12 +298,16 @@ export default function RegisterPage() {
                   <span className="material-symbols-outlined">
                     {showPassword ? 'visibility_off' : 'visibility'}
                   </span>
-                </button>
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
 
             {/* Submit Button */}
-            <button
+            <motion.button
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45 }}
+              whileTap={{ scale: 0.97 }}
               type="submit"
               disabled={loading}
               style={{
@@ -271,25 +322,30 @@ export default function RegisterPage() {
                 cursor: loading ? 'not-allowed' : 'pointer',
                 opacity: loading ? 0.7 : 1,
                 boxShadow: '0 10px 30px -10px rgba(42, 25, 230, 0.5)',
-                transition: 'all 0.2s ease',
+                transition: 'opacity 0.2s ease',
                 fontFamily: 'inherit',
                 marginTop: '8px',
               }}
             >
               {loading ? 'מעבד...' : 'יצירת חשבון'}
-            </button>
+            </motion.button>
           </form>
 
           {/* Login Link */}
-          <div style={{
-            marginTop: '32px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            paddingTop: '16px',
-            borderTop: '1px solid rgba(226,232,240,0.5)',
-          }}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.55 }}
+            style={{
+              marginTop: '32px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              paddingTop: '16px',
+              borderTop: '1px solid rgba(226,232,240,0.5)',
+            }}
+          >
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>כבר יש לך חשבון?</p>
             <Link to="/login" style={{
               color: 'var(--primary)',
@@ -297,43 +353,57 @@ export default function RegisterPage() {
               fontSize: '0.875rem',
               textDecoration: 'none',
             }}>התחברות</Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* Decorative Background Elements */}
-      <div style={{
-        position: 'absolute',
-        bottom: '-80px',
-        right: '-80px',
-        width: '256px',
-        height: '256px',
-        background: 'rgba(42,25,230,0.1)',
-        borderRadius: '50%',
-        filter: 'blur(48px)',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute',
-        top: '-80px',
-        left: '-80px',
-        width: '256px',
-        height: '256px',
-        background: 'rgba(168,85,247,0.1)',
-        borderRadius: '50%',
-        filter: 'blur(48px)',
-        pointerEvents: 'none',
-      }} />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.3, duration: 0.6 }}
+        style={{
+          position: 'absolute',
+          bottom: '-80px',
+          right: '-80px',
+          width: '256px',
+          height: '256px',
+          background: 'rgba(42,25,230,0.1)',
+          borderRadius: '50%',
+          filter: 'blur(48px)',
+          pointerEvents: 'none',
+        }}
+      />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.4, duration: 0.6 }}
+        style={{
+          position: 'absolute',
+          top: '-80px',
+          left: '-80px',
+          width: '256px',
+          height: '256px',
+          background: 'rgba(168,85,247,0.1)',
+          borderRadius: '50%',
+          filter: 'blur(48px)',
+          pointerEvents: 'none',
+        }}
+      />
 
       {/* Footer */}
-      <div style={{
-        padding: '16px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '4px',
-        opacity: 0.6,
-      }}>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.6 }}
+        transition={{ delay: 0.6 }}
+        style={{
+          padding: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '4px',
+        }}
+      >
         <div style={{
           width: '128px',
           height: '4px',
@@ -347,7 +417,7 @@ export default function RegisterPage() {
           textTransform: 'uppercase',
           letterSpacing: '2px',
         }}>MindTrack v1.0 Premium</p>
-      </div>
+      </motion.div>
     </div>
   );
 }
