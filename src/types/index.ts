@@ -46,8 +46,8 @@ export interface EventFormData {
   recent_food: string[];
   food_notes: string;
   location_type: string;
-  sleep_hours: number;
-  stress_level: number;
+  sleep_hours: number | null;
+  stress_level: number | null;
   notes: string;
   started_at?: string;
 }

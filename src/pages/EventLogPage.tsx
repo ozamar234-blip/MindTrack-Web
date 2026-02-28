@@ -173,8 +173,8 @@ export default function EventLogPage() {
         recent_food: [],
         food_notes: '',
         location_type: '',
-        sleep_hours: 0,
-        stress_level: 0,
+        sleep_hours: null,
+        stress_level: null,
         notes,
         started_at: selectedDate.toISOString(),
       });
