@@ -160,6 +160,10 @@ export default function EventLogPage() {
   };
 
   const handleSave = async () => {
+    if (!user?.id) {
+      alert('לא מחובר — יש להתחבר מחדש');
+      return;
+    }
     setSaving(true);
     try {
       await createEvent({
@@ -175,8 +179,10 @@ export default function EventLogPage() {
         started_at: selectedDate.toISOString(),
       });
       navigate('/breathing', { state: { fromEvent: true } });
-    } catch {
-      alert('שגיאה בשמירה');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : typeof err === 'object' && err !== null && 'message' in err ? String((err as Record<string, unknown>).message) : JSON.stringify(err);
+      console.error('Event save error:', err);
+      alert(`שגיאה בשמירה:\n${msg}`);
     } finally {
       setSaving(false);
     }
