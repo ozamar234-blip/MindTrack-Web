@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '../config/supabase';
 import type { HealthEvent, DailyCheckin, AIAnalysisResponse } from '../types';
 
 // ═══════════════════════════════════════════
@@ -177,23 +178,56 @@ export async function runAIAnalysis(
     primary_condition: primaryCondition,
   };
 
-  const { data, error } = await supabase.functions.invoke('analyze-health', {
-    body: payload,
-  });
+  // Get the user's JWT for authorization
+  const { data: { session } } = await supabase.auth.getSession();
+  const accessToken = session?.access_token || SUPABASE_ANON_KEY;
 
-  if (error) {
-    throw new Error(error.message || 'שגיאה בקריאה למנוע הניתוח');
+  // Use direct fetch instead of supabase.functions.invoke for better error handling
+  const functionUrl = `${SUPABASE_URL}/functions/v1/analyze-health`;
+
+  let response: Response;
+  try {
+    response = await fetch(functionUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        'apikey': SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch (fetchError) {
+    // Network-level error – give a clear Hebrew message
+    const detail = fetchError instanceof Error ? fetchError.message : String(fetchError);
+    console.error('Edge Function fetch error:', detail);
+    throw new Error(`שגיאת רשת בגישה לשרת הניתוח: ${detail}`);
+  }
+
+  // Read the response body
+  let data: Record<string, unknown>;
+  try {
+    data = await response.json();
+  } catch {
+    const text = await response.text().catch(() => '');
+    console.error('Edge Function non-JSON response:', response.status, text);
+    throw new Error(`השרת החזיר תשובה לא תקינה (${response.status}). נסה שוב.`);
+  }
+
+  // Check for HTTP errors
+  if (!response.ok) {
+    const errMsg = (data?.error as string) || `שגיאת שרת (${response.status})`;
+    throw new Error(errMsg);
   }
 
   if (data?.error) {
-    throw new Error(data.error);
+    throw new Error(data.error as string);
   }
 
-  if (!data?.analysis || !data.analysis.analysis_summary || !Array.isArray(data.analysis.key_insights)) {
+  if (!data?.analysis || !(data.analysis as Record<string, unknown>)?.analysis_summary || !Array.isArray((data.analysis as Record<string, unknown>)?.key_insights)) {
     throw new Error('תגובה לא תקינה מהשרת. נסה שוב.');
   }
 
-  return data as AnalysisResult;
+  return data as unknown as AnalysisResult;
 }
 
 // Save analysis result to ai_insights table for history
