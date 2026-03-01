@@ -251,7 +251,7 @@ export default function RegisterPage() {
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="לפחות 8 תווים"
+                  placeholder="לפחות 6 תווים"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required

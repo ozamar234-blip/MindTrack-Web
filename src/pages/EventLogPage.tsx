@@ -133,7 +133,6 @@ export default function EventLogPage() {
   const [foodNotes, setFoodNotes] = useState('');
   const [locationKey, setLocationKey] = useState('');
   const [sleepHours, setSleepHours] = useState(7);
-  const [stressLevel] = useState(5);
   const [notes, setNotes] = useState('');
 
   // Date picker
@@ -228,7 +227,7 @@ export default function EventLogPage() {
         food_notes: foodNotes,
         location_type: locationKey,
         sleep_hours: sleepHours,
-        stress_level: stressLevel,
+        stress_level: null,
         notes,
         started_at: selectedDate.toISOString(),
       });
@@ -301,14 +300,14 @@ export default function EventLogPage() {
             </motion.div>
             <div style={{ padding: '0 8px' }}>
               <div style={{ position: 'relative', height: '12px', width: '100%' }}>
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to left, #4ade80, #facc15, #f87171)', borderRadius: '9999px' }} />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #4ade80, #facc15, #f87171)', borderRadius: '9999px' }} />
                 <input
                   type="range" min={1} max={10} step={1} value={intensity}
                   onChange={e => setIntensity(+e.target.value)}
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '12px', WebkitAppearance: 'none', appearance: 'none', background: 'transparent', cursor: 'pointer' }}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '12px', WebkitAppearance: 'none', appearance: 'none', background: 'transparent', cursor: 'pointer', direction: 'ltr' }}
                 />
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-light)', direction: 'rtl' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-light)', direction: 'ltr' }}>
                 <span>קל</span><span>בינוני</span><span>חמור</span>
               </div>
             </div>
