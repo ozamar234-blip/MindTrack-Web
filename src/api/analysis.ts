@@ -203,13 +203,13 @@ export async function runAIAnalysis(
     throw new Error(`שגיאת רשת בגישה לשרת הניתוח: ${detail}`);
   }
 
-  // Read the response body
+  // Read the response body – use text() first to avoid double-consumption
   let data: Record<string, unknown>;
+  const rawBody = await response.text().catch(() => '');
   try {
-    data = await response.json();
+    data = JSON.parse(rawBody);
   } catch {
-    const text = await response.text().catch(() => '');
-    console.error('Edge Function non-JSON response:', response.status, text);
+    console.error('Edge Function non-JSON response:', response.status, rawBody.slice(0, 200));
     throw new Error(`השרת החזיר תשובה לא תקינה (${response.status}). נסה שוב.`);
   }
 

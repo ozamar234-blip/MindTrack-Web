@@ -81,18 +81,18 @@ function SummaryCard({ summary }: { summary: AIAnalysisResponse['analysis_summar
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '16px' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '2rem', fontWeight: 900 }}>{summary.total_events_analyzed}</div>
-          <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>אירועים</div>
+          <div style={{ fontSize: 'clamp(1.4rem, 5vw, 2rem)', fontWeight: 900 }}>{summary.total_events_analyzed}</div>
+          <div style={{ fontSize: '0.72rem', opacity: 0.8 }}>אירועים</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '2rem', fontWeight: 900 }}>{Number(summary.avg_intensity || 0).toFixed(1)}</div>
-          <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>עוצמה ממוצעת</div>
+          <div style={{ fontSize: 'clamp(1.4rem, 5vw, 2rem)', fontWeight: 900 }}>{Number(summary.avg_intensity || 0).toFixed(1)}</div>
+          <div style={{ fontSize: '0.72rem', opacity: 0.8 }}>עוצמה ממוצעת</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '2rem', fontWeight: 900 }}>7</div>
-          <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>ממדי ניתוח</div>
+          <div style={{ fontSize: 'clamp(1.4rem, 5vw, 2rem)', fontWeight: 900 }}>7</div>
+          <div style={{ fontSize: '0.72rem', opacity: 0.8 }}>ממדי ניתוח</div>
         </div>
       </div>
 
@@ -315,7 +315,7 @@ function SymptomSection({ signature }: { signature: AIAnalysisResponse['symptom_
 
       {/* Most common symptoms */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
-        {signature.most_common.map((symptom, i) => (
+        {(signature.most_common || []).map((symptom, i) => (
           <span key={i} style={{
             background: i === 0 ? '#FEE2E2' : i === 1 ? '#FEF3C7' : '#E0E7FF',
             color: i === 0 ? '#991B1B' : i === 1 ? '#92400E' : '#3730A3',
@@ -333,7 +333,7 @@ function SymptomSection({ signature }: { signature: AIAnalysisResponse['symptom_
         {signature.pre_event_pattern}
       </p>
 
-      {signature.high_intensity_markers.length > 0 && (
+      {(signature.high_intensity_markers || []).length > 0 && (
         <div style={{
           background: '#FEF2F2',
           border: '1px solid #FECACA',
@@ -345,7 +345,7 @@ function SymptomSection({ signature }: { signature: AIAnalysisResponse['symptom_
         }}>
           <Zap size={16} style={{ color: '#DC2626', flexShrink: 0 }} />
           <span style={{ fontSize: '0.8rem', color: '#991B1B', fontWeight: 600 }}>
-            סמנים לעוצמה גבוהה: {signature.high_intensity_markers.join(', ')}
+            סמנים לעוצמה גבוהה: {(signature.high_intensity_markers || []).join(', ')}
           </span>
         </div>
       )}
@@ -375,13 +375,13 @@ function TimelineSection({ patterns }: { patterns: AIAnalysisResponse['timeline_
         <div style={{ background: '#EFF6FF', borderRadius: '12px', padding: '12px' }}>
           <div style={{ fontSize: '0.7rem', color: '#6B7280', marginBottom: '4px', fontWeight: 600 }}>שעות שיא</div>
           <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#1E40AF' }}>
-            {patterns.peak_hours.join(', ')}
+            {(patterns.peak_hours || []).join(', ') || '—'}
           </div>
         </div>
         <div style={{ background: '#F5F3FF', borderRadius: '12px', padding: '12px' }}>
           <div style={{ fontSize: '0.7rem', color: '#6B7280', marginBottom: '4px', fontWeight: 600 }}>ימי שיא</div>
           <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#6D28D9' }}>
-            {patterns.peak_days.join(', ')}
+            {(patterns.peak_days || []).join(', ') || '—'}
           </div>
         </div>
       </div>
@@ -639,8 +639,10 @@ async function generatePDF(element: HTMLElement, title: string): Promise<Blob> {
   let remainingHeight = contentHeight;
   let srcY = 0;
 
-  // Multi-page support
-  while (remainingHeight > 0) {
+  // Multi-page support (guard: max 20 pages to prevent infinite loop)
+  let pageCount = 0;
+  while (remainingHeight > 0.5 && pageCount < 20) {
+    pageCount++;
     const pageContentHeight = pdfHeight - margin * 2;
     const sliceHeight = Math.min(remainingHeight, pageContentHeight);
     const sliceSrcHeight = (sliceHeight / contentHeight) * imgHeight;
@@ -680,14 +682,14 @@ function Toast({ message, visible }: { message: string; visible: boolean }) {
           exit={{ opacity: 0, y: 40 }}
           style={{
             position: 'fixed',
-            bottom: '100px',
+            bottom: 'calc(100px + env(safe-area-inset-bottom, 0px))',
             left: '50%',
             transform: 'translateX(-50%)',
             background: '#1F2937',
             color: 'white',
-            padding: '12px 24px',
-            borderRadius: '16px',
-            fontSize: '0.9rem',
+            padding: '10px 20px',
+            borderRadius: '14px',
+            fontSize: '0.85rem',
             fontWeight: 700,
             zIndex: 1000,
             display: 'flex',
@@ -695,6 +697,8 @@ function Toast({ message, visible }: { message: string; visible: boolean }) {
             gap: '8px',
             boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
             direction: 'rtl',
+            maxWidth: 'calc(100vw - 48px)',
+            whiteSpace: 'nowrap',
           }}
         >
           <Check size={18} style={{ color: '#34D399' }} />
@@ -723,13 +727,15 @@ function ActionBar({
       transition={{ delay: 0.6 }}
       style={{
         position: 'fixed',
-        bottom: '80px',
+        bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
         left: '50%',
         transform: 'translateX(-50%)',
         display: 'flex',
-        gap: '12px',
-        zIndex: 50,
+        gap: '10px',
+        zIndex: 900,
         direction: 'rtl',
+        maxWidth: 'calc(100vw - 32px)',
+        width: 'auto',
       }}
     >
       {/* Save as PDF */}
@@ -740,21 +746,23 @@ function ActionBar({
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-          padding: '14px 24px',
-          borderRadius: '20px',
+          gap: '6px',
+          padding: '12px 18px',
+          borderRadius: '18px',
           border: 'none',
           background: 'white',
           color: '#7C3AED',
           fontWeight: 800,
-          fontSize: '0.9rem',
+          fontSize: '0.85rem',
+          fontFamily: 'inherit',
           cursor: savingPDF ? 'wait' : 'pointer',
           boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
           opacity: savingPDF ? 0.7 : 1,
           transition: 'opacity 0.2s',
+          whiteSpace: 'nowrap',
         }}
       >
-        {savingPDF ? <Loader2 size={18} className="spin" /> : <Download size={18} />}
+        {savingPDF ? <Loader2 size={16} className="spin" /> : <Download size={16} />}
         {savingPDF ? 'יוצר PDF...' : 'שמור PDF'}
       </motion.button>
 
@@ -766,19 +774,21 @@ function ActionBar({
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
-            padding: '14px 24px',
-            borderRadius: '20px',
+            gap: '6px',
+            padding: '12px 18px',
+            borderRadius: '18px',
             border: 'none',
             background: 'linear-gradient(135deg, #7F13EC, #2A19E6)',
             color: 'white',
             fontWeight: 800,
-            fontSize: '0.9rem',
+            fontSize: '0.85rem',
+            fontFamily: 'inherit',
             cursor: 'pointer',
             boxShadow: '0 8px 32px rgba(127, 19, 236, 0.3)',
+            whiteSpace: 'nowrap',
           }}
         >
-          <Share2 size={18} />
+          <Share2 size={16} />
           שתף
         </motion.button>
       )}
@@ -806,12 +816,14 @@ export default function AnalysisPage() {
   } = useAnalysis(user?.id, profile?.primary_condition || null);
 
   const resultsRef = useRef<HTMLDivElement>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [savingPDF, setSavingPDF] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   const showToast = useCallback((msg: string) => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
     setToast(msg);
-    setTimeout(() => setToast(null), 3000);
+    toastTimer.current = setTimeout(() => setToast(null), 3000);
   }, []);
 
   const handleSavePDF = useCallback(async () => {
@@ -857,15 +869,16 @@ export default function AnalysisPage() {
 
       if (navigator.share) {
         // Try sharing as PDF if possible
-        if (resultsRef.current) {
+        if (resultsRef.current && navigator.canShare?.({ files: [new File([], 't.pdf', { type: 'application/pdf' })] })) {
           try {
             const blob = await generatePDF(resultsRef.current, summary?.date_range || '');
             const file = new File([blob], 'MindTrack-Analysis.pdf', { type: 'application/pdf' });
             await navigator.share({ title: 'ניתוח MindTrack AI', text, files: [file] });
             showToast('שותף בהצלחה ✓');
             return;
-          } catch {
-            // Fallback to text-only share if file sharing not supported
+          } catch (fileErr) {
+            // User cancelled → stop. Only fallback on feature-not-supported errors
+            if (fileErr instanceof Error && fileErr.name === 'AbortError') return;
           }
         }
         await navigator.share({ title: 'ניתוח MindTrack AI', text });
@@ -873,9 +886,8 @@ export default function AnalysisPage() {
       }
     } catch (err) {
       // User cancelled share – not an error
-      if (err instanceof Error && err.name !== 'AbortError') {
-        console.error('Share error:', err);
-      }
+      if (err instanceof Error && err.name === 'AbortError') return;
+      console.error('Share error:', err);
     }
   }, [analysis, showToast]);
 
@@ -896,6 +908,7 @@ export default function AnalysisPage() {
       background: 'var(--bg-warm)',
       minHeight: '100dvh',
       paddingBottom: '120px',
+      overflowX: 'hidden',
     }}>
       {/* Header */}
       <div style={{
