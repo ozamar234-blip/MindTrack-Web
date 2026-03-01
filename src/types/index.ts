@@ -123,3 +123,74 @@ export interface BreathingSession {
   related_event_id: string | null;
   created_at: string;
 }
+
+// ═══════════════════════════════════════════
+// AI Analysis Engine Types
+// ═══════════════════════════════════════════
+
+export interface AIAnalysisResponse {
+  analysis_summary: AnalysisSummary;
+  key_insights: KeyInsight[];
+  trigger_equations: TriggerEquation[];
+  symptom_signature: SymptomSignature;
+  timeline_patterns: TimelinePatterns;
+  positive_findings: PositiveFinding[];
+  data_quality: DataQuality;
+  medical_disclaimer: string;
+}
+
+export interface AnalysisSummary {
+  total_events_analyzed: number;
+  date_range: string;
+  avg_intensity: number;
+  trend: 'improving' | 'worsening' | 'stable';
+  trend_description: string;
+}
+
+export interface KeyInsight {
+  id: number;
+  emoji: string;
+  title: string;
+  body: string;
+  category: 'sleep' | 'food' | 'stress' | 'time' | 'location' | 'symptoms' | 'mood' | 'cross_correlation';
+  confidence: number;
+  severity: 'info' | 'attention' | 'important';
+  actionable_tip: string;
+  data_points: {
+    statistic: string;
+    comparison: string;
+    sample_size: string;
+  };
+}
+
+export interface TriggerEquation {
+  factors: string[];
+  probability: number;
+  description: string;
+  events_matching: number;
+  events_total: number;
+}
+
+export interface SymptomSignature {
+  most_common: string[];
+  pre_event_pattern: string;
+  high_intensity_markers: string[];
+}
+
+export interface TimelinePatterns {
+  peak_hours: string[];
+  peak_days: string[];
+  cycle_days: number | null;
+  cluster_description: string;
+}
+
+export interface PositiveFinding {
+  emoji: string;
+  text: string;
+}
+
+export interface DataQuality {
+  completeness: number;
+  missing_data_note: string;
+  recommendation: string;
+}

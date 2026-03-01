@@ -11,6 +11,7 @@ import CheckinPage from './pages/CheckinPage';
 import DashboardPage from './pages/DashboardPage';
 import BreathingPage from './pages/BreathingPage';
 import InsightsPage from './pages/InsightsPage';
+import AnalysisPage from './pages/AnalysisPage';
 import HistoryPage from './pages/HistoryPage';
 import SettingsPage from './pages/SettingsPage';
 
@@ -131,6 +132,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path="/breathing" element={<ProtectedRoute><BreathingPage /></ProtectedRoute>} />
         <Route path="/insights" element={<ProtectedRoute><InsightsPage /></ProtectedRoute>} />
+        <Route path="/analysis" element={<ProtectedRoute><AnalysisPage /></ProtectedRoute>} />
         <Route path="/history" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
 

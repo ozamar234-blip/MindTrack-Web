@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useInsights } from '../hooks/useInsights';
 import { getConfidenceLabel } from '../utils/helpers';
 import { MIN_EVENTS_FOR_ANALYSIS } from '../utils/constants';
-import { Sparkles, X } from 'lucide-react';
+import { Sparkles, X, Brain } from 'lucide-react';
 
 export default function InsightsPage() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { insights, loading, fetchInsights, generateInsights, markRead, dismiss } = useInsights(user?.id);
 
@@ -79,6 +81,28 @@ export default function InsightsPage() {
       }}>
         <Sparkles size={24} />
         {loading ? 'מייצר תובנות...' : 'צור תובנות חדשות'}
+      </button>
+
+      {/* Deep AI Analysis CTA */}
+      <button onClick={() => navigate('/analysis')} style={{
+        marginBottom: '40px',
+        padding: '18px',
+        fontSize: '1.1rem',
+        borderRadius: '24px',
+        background: 'white',
+        color: '#7F13EC',
+        boxShadow: '0 4px 16px rgba(127, 19, 236, 0.1)',
+        border: '2px solid #E9D5FF',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '10px',
+        width: '100%',
+        fontWeight: 800,
+        cursor: 'pointer',
+      }}>
+        <Brain size={22} />
+        ניתוח AI מעמיק (7 ממדים)
       </button>
 
       {loading && insights.length === 0 ? (
