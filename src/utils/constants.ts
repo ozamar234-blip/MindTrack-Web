@@ -35,6 +35,26 @@ export const ACTIVITY_OPTIONS = [
   { value: 'none', label: 'ללא', icon: '🚫' },
 ];
 
+export const FOOD_OPTIONS = [
+  { value: 'coffee', label: 'קפה', icon: '☕' },
+  { value: 'tea', label: 'תה', icon: '🍵' },
+  { value: 'energy_drink', label: 'משקה אנרגיה', icon: '⚡' },
+  { value: 'chocolate', label: 'שוקולד', icon: '🍫' },
+  { value: 'sweets', label: 'ממתקים', icon: '🍬' },
+  { value: 'sugary_drink', label: 'משקה ממותק', icon: '🥤' },
+  { value: 'alcohol', label: 'אלכוהול', icon: '🍷' },
+  { value: 'beer', label: 'בירה', icon: '🍺' },
+  { value: 'dairy', label: 'חלב / גבינה', icon: '🧀' },
+  { value: 'bread_pasta', label: 'לחם / פסטה', icon: '🍞' },
+  { value: 'fast_food', label: 'מזון מהיר', icon: '🍔' },
+  { value: 'snacks', label: 'חטיפים', icon: '🍟' },
+  { value: 'fruit', label: 'פירות', icon: '🍎' },
+  { value: 'vegetables', label: 'ירקות', icon: '🥦' },
+  { value: 'nuts', label: 'אגוזים', icon: '🥜' },
+  { value: 'fish', label: 'דגים', icon: '🐟' },
+  { value: 'none', label: 'לא אכלתי', icon: '🚫' },
+];
+
 export const DEFAULT_SYMPTOMS = [
   { id: 'anxiety', name_he: 'חרדה', icon: '' },
   { id: 'panic', name_he: 'פניקה', icon: '' },
