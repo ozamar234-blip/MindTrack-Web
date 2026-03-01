@@ -41,7 +41,10 @@ export function useAnalysis(userId: string | undefined, primaryCondition: string
 
   // Load previous analysis and current data on mount
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) {
+      setLoadingPrevious(false);
+      return;
+    }
 
     const loadData = async () => {
       setLoadingPrevious(true);

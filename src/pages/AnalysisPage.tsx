@@ -45,7 +45,7 @@ const SEVERITY_ICONS = {
 // ═══════════════════════════════════════════
 
 function SummaryCard({ summary }: { summary: AIAnalysisResponse['analysis_summary'] }) {
-  const trend = TREND_CONFIG[summary.trend];
+  const trend = TREND_CONFIG[summary.trend] || TREND_CONFIG.stable;
   const TrendIcon = trend.icon;
 
   return (
@@ -86,7 +86,7 @@ function SummaryCard({ summary }: { summary: AIAnalysisResponse['analysis_summar
           <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>אירועים</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '2rem', fontWeight: 900 }}>{summary.avg_intensity.toFixed(1)}</div>
+          <div style={{ fontSize: '2rem', fontWeight: 900 }}>{Number(summary.avg_intensity || 0).toFixed(1)}</div>
           <div style={{ fontSize: '0.75rem', opacity: 0.8 }}>עוצמה ממוצעת</div>
         </div>
         <div style={{ textAlign: 'center' }}>
@@ -103,8 +103,8 @@ function SummaryCard({ summary }: { summary: AIAnalysisResponse['analysis_summar
 }
 
 function InsightCard({ insight, index }: { insight: KeyInsight; index: number }) {
-  const severity = SEVERITY_COLORS[insight.severity];
-  const SeverityIcon = SEVERITY_ICONS[insight.severity];
+  const severity = SEVERITY_COLORS[insight.severity] || SEVERITY_COLORS.info;
+  const SeverityIcon = SEVERITY_ICONS[insight.severity] || SEVERITY_ICONS.info;
 
   return (
     <motion.div
@@ -181,31 +181,36 @@ function InsightCard({ insight, index }: { insight: KeyInsight; index: number })
       }}>
         <div>
           <div style={{ fontSize: '1.3rem', fontWeight: 900, color: '#7C3AED' }}>
-            {insight.data_points.statistic}
+            {insight.data_points?.statistic || '—'}
           </div>
-          <div style={{ fontSize: '0.7rem', color: '#6B7280' }}>{insight.data_points.comparison}</div>
+          <div style={{ fontSize: '0.7rem', color: '#6B7280' }}>{insight.data_points?.comparison || ''}</div>
         </div>
-        <div style={{ textAlign: 'left' }}>
+        <div>
           <div style={{ fontSize: '0.75rem', color: '#9CA3AF', fontWeight: 600 }}>מדגם</div>
-          <div style={{ fontSize: '0.8rem', color: '#6B7280', fontWeight: 700 }}>{insight.data_points.sample_size}</div>
+          <div style={{ fontSize: '0.8rem', color: '#6B7280', fontWeight: 700 }}>{insight.data_points?.sample_size || '—'}</div>
         </div>
       </div>
 
       {/* Confidence bar */}
       <div style={{ marginBottom: '12px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: '#9CA3AF', marginBottom: '4px' }}>
-          <span>רמת ביטחון</span>
-          <span style={{ fontWeight: 700 }}>{Math.round(insight.confidence * 100)}%</span>
-        </div>
-        <div style={{ height: '4px', background: '#E5E7EB', borderRadius: '2px', overflow: 'hidden' }}>
-          <div style={{
-            height: '100%',
-            width: `${insight.confidence * 100}%`,
-            background: insight.confidence > 0.7 ? '#10B981' : insight.confidence > 0.5 ? '#F59E0B' : '#EF4444',
-            borderRadius: '2px',
-            transition: 'width 0.8s ease',
-          }} />
-        </div>
+        {(() => {
+          const conf = Math.min(1, Math.max(0, insight.confidence || 0));
+          return (<>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: '#9CA3AF', marginBottom: '4px' }}>
+              <span>רמת ביטחון</span>
+              <span style={{ fontWeight: 700 }}>{Math.round(conf * 100)}%</span>
+            </div>
+            <div style={{ height: '4px', background: '#E5E7EB', borderRadius: '2px', overflow: 'hidden' }}>
+              <div style={{
+                height: '100%',
+                width: `${conf * 100}%`,
+                background: conf > 0.7 ? '#10B981' : conf > 0.5 ? '#F59E0B' : '#EF4444',
+                borderRadius: '2px',
+                transition: 'width 0.8s ease',
+              }} />
+            </div>
+          </>);
+        })()}
       </div>
 
       {/* Actionable Tip */}
@@ -517,31 +522,30 @@ function AnalysisLoading({ message }: { message: string }) {
         textAlign: 'center',
       }}
     >
-      {/* Animated brain icon */}
-      <motion.div
-        animate={{
-          scale: [1, 1.1, 1],
-          rotate: [0, 5, -5, 0],
-        }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        style={{ fontSize: '4rem', marginBottom: '24px' }}
-      >
-        🧠
-      </motion.div>
-
-      {/* Pulsing ring */}
-      <motion.div
-        animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.1, 0.3] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        style={{
-          width: '80px',
-          height: '80px',
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, #7F13EC33, #2A19E633)',
-          position: 'absolute',
-          marginTop: '-10px',
-        }}
-      />
+      {/* Animated brain icon with pulsing ring */}
+      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
+        <motion.div
+          animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.1, 0.3] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          style={{
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #7F13EC33, #2A19E633)',
+            position: 'absolute',
+          }}
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.1, 1],
+            rotate: [0, 5, -5, 0],
+          }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ fontSize: '4rem', position: 'relative', zIndex: 1 }}
+        >
+          🧠
+        </motion.div>
+      </div>
 
       <div className="spinner" style={{
         width: '44px',
@@ -763,41 +767,45 @@ export default function AnalysisPage() {
                 fontSize: '0.75rem',
                 fontWeight: 700,
               }}>
-                {analysis.key_insights.length}
+                {(analysis.key_insights || []).length}
               </span>
             </h2>
-            {analysis.key_insights.map((insight, i) => (
-              <InsightCard key={insight.id} insight={insight} index={i} />
+            {(analysis.key_insights || []).map((insight, i) => (
+              <InsightCard key={insight.id ?? i} insight={insight} index={i} />
             ))}
           </div>
 
           {/* Trigger Equations */}
-          {analysis.trigger_equations.length > 0 && (
+          {(analysis.trigger_equations || []).length > 0 && (
             <div style={{ marginBottom: '24px' }}>
               <h2 style={{ fontSize: '1.1rem', fontWeight: 900, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 ⚡ משוואות טריגר
               </h2>
-              {analysis.trigger_equations.map((eq, i) => (
+              {(analysis.trigger_equations || []).map((eq, i) => (
                 <TriggerCard key={i} equation={eq} index={i} />
               ))}
             </div>
           )}
 
           {/* Symptom Signature */}
-          {analysis.symptom_signature.most_common.length > 0 && (
+          {analysis.symptom_signature?.most_common?.length > 0 && (
             <SymptomSection signature={analysis.symptom_signature} />
           )}
 
           {/* Timeline Patterns */}
-          <TimelineSection patterns={analysis.timeline_patterns} />
+          {analysis.timeline_patterns && (
+            <TimelineSection patterns={analysis.timeline_patterns} />
+          )}
 
           {/* Positive Findings */}
-          {analysis.positive_findings.length > 0 && (
+          {(analysis.positive_findings || []).length > 0 && (
             <PositiveSection findings={analysis.positive_findings} />
           )}
 
           {/* Data Quality */}
-          <DataQualityCard quality={analysis.data_quality} />
+          {analysis.data_quality && (
+            <DataQualityCard quality={analysis.data_quality} />
+          )}
 
           {/* Medical Disclaimer */}
           <motion.div

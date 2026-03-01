@@ -189,6 +189,10 @@ export async function runAIAnalysis(
     throw new Error(data.error);
   }
 
+  if (!data?.analysis || !data.analysis.analysis_summary || !Array.isArray(data.analysis.key_insights)) {
+    throw new Error('תגובה לא תקינה מהשרת. נסה שוב.');
+  }
+
   return data as AnalysisResult;
 }
 
@@ -204,13 +208,15 @@ export async function saveAnalysisResult(
 
   const { error } = await supabase.from('ai_insights').insert({
     user_id: userId,
-    insight_text: analysis.analysis_summary.trend_description,
+    insight_text: analysis.analysis_summary?.trend_description || 'ניתוח AI מלא',
     insight_type: 'ai_full_analysis',
     category: 'full_analysis',
     confidence: 0.9,
     data_start_date: startDate.toISOString().split('T')[0],
     data_end_date: now.toISOString().split('T')[0],
     events_analyzed: eventsCount,
+    is_read: false,
+    is_dismissed: false,
     raw_analysis: analysis,
   });
 

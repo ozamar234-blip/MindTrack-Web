@@ -313,6 +313,38 @@ ${JSON.stringify(data.correlations, null, 0)}
 // Edge Function Handler
 // ═══════════════════════════════════════════
 
+// Validate that the parsed JSON has the expected AIAnalysisResponse shape
+function validateAnalysisShape(obj: Record<string, unknown>): boolean {
+  return (
+    obj != null &&
+    typeof obj === 'object' &&
+    'analysis_summary' in obj &&
+    'key_insights' in obj &&
+    Array.isArray(obj.key_insights) &&
+    'medical_disclaimer' in obj
+  );
+}
+
+// Ensure arrays exist with safe defaults
+function sanitizeAnalysis(obj: Record<string, unknown>): Record<string, unknown> {
+  return {
+    ...obj,
+    key_insights: Array.isArray(obj.key_insights) ? obj.key_insights : [],
+    trigger_equations: Array.isArray(obj.trigger_equations) ? obj.trigger_equations : [],
+    positive_findings: Array.isArray(obj.positive_findings) ? obj.positive_findings : [],
+    symptom_signature: obj.symptom_signature && typeof obj.symptom_signature === 'object'
+      ? { most_common: [], pre_event_pattern: '', high_intensity_markers: [], ...(obj.symptom_signature as Record<string, unknown>) }
+      : { most_common: [], pre_event_pattern: '', high_intensity_markers: [] },
+    timeline_patterns: obj.timeline_patterns && typeof obj.timeline_patterns === 'object'
+      ? { peak_hours: [], peak_days: [], cycle_days: null, cluster_description: '', ...(obj.timeline_patterns as Record<string, unknown>) }
+      : { peak_hours: [], peak_days: [], cycle_days: null, cluster_description: '' },
+    data_quality: obj.data_quality && typeof obj.data_quality === 'object'
+      ? { completeness: 0.5, missing_data_note: '', recommendation: '', ...(obj.data_quality as Record<string, unknown>) }
+      : { completeness: 0.5, missing_data_note: '', recommendation: '' },
+    medical_disclaimer: obj.medical_disclaimer || 'ניתוח זה מבוסס על דפוסים סטטיסטיים בנתונים שלך ואינו מהווה אבחון או המלצה רפואית.',
+  };
+}
+
 Deno.serve(async (req: Request) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
@@ -320,6 +352,15 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
+    // ── Auth verification ──
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized – missing auth token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
     if (!apiKey) {
       return new Response(
@@ -340,22 +381,31 @@ Deno.serve(async (req: Request) => {
 
     const userMessage = buildUserMessage(data);
 
-    // Call Claude API
-    const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 4096,
-        temperature: 0.3,
-        system: SYSTEM_PROMPT_HE,
-        messages: [{ role: 'user', content: userMessage }],
-      }),
-    });
+    // Call Claude API with timeout
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 55000);
+
+    let anthropicResponse;
+    try {
+      anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 8192,
+          temperature: 0.3,
+          system: SYSTEM_PROMPT_HE,
+          messages: [{ role: 'user', content: userMessage }],
+        }),
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
 
     if (!anthropicResponse.ok) {
       const errorText = await anthropicResponse.text();
@@ -369,27 +419,39 @@ Deno.serve(async (req: Request) => {
     const anthropicResult = await anthropicResponse.json();
     const rawText = anthropicResult.content?.[0]?.text || '';
 
+    // Warn if response was truncated
+    if (anthropicResult.stop_reason === 'max_tokens') {
+      console.warn('Analysis response was truncated by max_tokens limit');
+    }
+
     // Parse the JSON response from Claude
-    let analysisJson;
+    let analysisJson: Record<string, unknown>;
     try {
-      // Try parsing directly first
       analysisJson = JSON.parse(rawText);
     } catch {
       // Try extracting JSON from potential markdown wrapping
-      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        analysisJson = JSON.parse(jsonMatch[0]);
+      const startIdx = rawText.indexOf('{');
+      if (startIdx !== -1) {
+        analysisJson = JSON.parse(rawText.slice(startIdx));
       } else {
         throw new Error('Failed to parse AI response as JSON');
       }
     }
 
+    // Validate required shape
+    if (!validateAnalysisShape(analysisJson)) {
+      throw new Error('AI response missing required fields (analysis_summary, key_insights)');
+    }
+
+    // Sanitize – ensure all arrays/objects have safe defaults
+    const sanitized = sanitizeAnalysis(analysisJson);
+
     return new Response(
       JSON.stringify({
-        analysis: analysisJson,
+        analysis: sanitized,
         usage: {
-          input_tokens: anthropicResult.usage?.input_tokens,
-          output_tokens: anthropicResult.usage?.output_tokens,
+          input_tokens: anthropicResult.usage?.input_tokens ?? 0,
+          output_tokens: anthropicResult.usage?.output_tokens ?? 0,
         },
         generated_at: new Date().toISOString(),
       }),
@@ -398,8 +460,11 @@ Deno.serve(async (req: Request) => {
 
   } catch (error) {
     console.error('Analysis error:', error);
+    const message = error instanceof Error
+      ? (error.name === 'AbortError' ? 'הניתוח ארך יותר מדי זמן. נסה שוב.' : error.message)
+      : 'Unknown analysis error';
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown analysis error' }),
+      JSON.stringify({ error: message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
