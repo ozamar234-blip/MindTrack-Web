@@ -1,10 +1,11 @@
+import { useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useAnalysis } from '../hooks/useAnalysis';
 import { getRelativeTime } from '../utils/helpers';
 import { ANALYSIS_CONFIG } from '../api/analysis';
-import { Sparkles, ArrowRight, TrendingUp, TrendingDown, Minus, ChevronDown, AlertTriangle, Info, AlertCircle, Lightbulb, Shield, Zap } from 'lucide-react';
+import { Sparkles, ArrowRight, TrendingUp, TrendingDown, Minus, AlertTriangle, Info, AlertCircle, Lightbulb, Shield, Zap, Download, Share2, Check, Loader2 } from 'lucide-react';
 import type { AIAnalysisResponse, KeyInsight, TriggerEquation } from '../types';
 
 // ═══════════════════════════════════════════
@@ -607,6 +608,185 @@ function EmptyState({ eventCount }: { eventCount: number }) {
 }
 
 // ═══════════════════════════════════════════
+// Save / Share Utilities
+// ═══════════════════════════════════════════
+
+async function generatePDF(element: HTMLElement, title: string): Promise<Blob> {
+  const html2canvas = (await import('html2canvas')).default;
+  const { jsPDF } = await import('jspdf');
+
+  // Capture the element as an image
+  const canvas = await html2canvas(element, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#FAF9F6',
+    logging: false,
+    windowWidth: 420,
+  });
+
+  const imgWidth = canvas.width;
+  const imgHeight = canvas.height;
+
+  // A4 dimensions in mm
+  const pdfWidth = 210;
+  const pdfHeight = 297;
+  const margin = 10;
+  const contentWidth = pdfWidth - margin * 2;
+  const contentHeight = (imgHeight * contentWidth) / imgWidth;
+
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  let y = margin;
+  let remainingHeight = contentHeight;
+  let srcY = 0;
+
+  // Multi-page support
+  while (remainingHeight > 0) {
+    const pageContentHeight = pdfHeight - margin * 2;
+    const sliceHeight = Math.min(remainingHeight, pageContentHeight);
+    const sliceSrcHeight = (sliceHeight / contentHeight) * imgHeight;
+
+    // Create a slice canvas for this page
+    const sliceCanvas = document.createElement('canvas');
+    sliceCanvas.width = imgWidth;
+    sliceCanvas.height = sliceSrcHeight;
+    const ctx = sliceCanvas.getContext('2d');
+    if (ctx) {
+      ctx.drawImage(canvas, 0, srcY, imgWidth, sliceSrcHeight, 0, 0, imgWidth, sliceSrcHeight);
+    }
+    const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.92);
+
+    if (srcY > 0) pdf.addPage();
+    pdf.addImage(sliceData, 'JPEG', margin, y, contentWidth, sliceHeight);
+
+    srcY += sliceSrcHeight;
+    remainingHeight -= sliceHeight;
+  }
+
+  // Add footer to last page
+  pdf.setFontSize(8);
+  pdf.setTextColor(160, 160, 160);
+  pdf.text(`MindTrack – ${title}`, pdfWidth / 2, pdfHeight - 5, { align: 'center' });
+
+  return pdf.output('blob');
+}
+
+function Toast({ message, visible }: { message: string; visible: boolean }) {
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 40 }}
+          style={{
+            position: 'fixed',
+            bottom: '100px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: '#1F2937',
+            color: 'white',
+            padding: '12px 24px',
+            borderRadius: '16px',
+            fontSize: '0.9rem',
+            fontWeight: 700,
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
+            direction: 'rtl',
+          }}
+        >
+          <Check size={18} style={{ color: '#34D399' }} />
+          {message}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function ActionBar({
+  onSavePDF,
+  onShare,
+  savingPDF,
+}: {
+  onSavePDF: () => void;
+  onShare: () => void;
+  savingPDF: boolean;
+}) {
+  const canShare = typeof navigator !== 'undefined' && !!navigator.share;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.6 }}
+      style={{
+        position: 'fixed',
+        bottom: '80px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        display: 'flex',
+        gap: '12px',
+        zIndex: 50,
+        direction: 'rtl',
+      }}
+    >
+      {/* Save as PDF */}
+      <motion.button
+        whileTap={{ scale: 0.95 }}
+        onClick={onSavePDF}
+        disabled={savingPDF}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '14px 24px',
+          borderRadius: '20px',
+          border: 'none',
+          background: 'white',
+          color: '#7C3AED',
+          fontWeight: 800,
+          fontSize: '0.9rem',
+          cursor: savingPDF ? 'wait' : 'pointer',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+          opacity: savingPDF ? 0.7 : 1,
+          transition: 'opacity 0.2s',
+        }}
+      >
+        {savingPDF ? <Loader2 size={18} className="spin" /> : <Download size={18} />}
+        {savingPDF ? 'יוצר PDF...' : 'שמור PDF'}
+      </motion.button>
+
+      {/* Share */}
+      {canShare && (
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={onShare}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '14px 24px',
+            borderRadius: '20px',
+            border: 'none',
+            background: 'linear-gradient(135deg, #7F13EC, #2A19E6)',
+            color: 'white',
+            fontWeight: 800,
+            fontSize: '0.9rem',
+            cursor: 'pointer',
+            boxShadow: '0 8px 32px rgba(127, 19, 236, 0.3)',
+          }}
+        >
+          <Share2 size={18} />
+          שתף
+        </motion.button>
+      )}
+    </motion.div>
+  );
+}
+
+// ═══════════════════════════════════════════
 // Main Page Component
 // ═══════════════════════════════════════════
 
@@ -624,6 +804,80 @@ export default function AnalysisPage() {
     hasEnoughData,
     eventCount,
   } = useAnalysis(user?.id, profile?.primary_condition || null);
+
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const [savingPDF, setSavingPDF] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
+
+  const showToast = useCallback((msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 3000);
+  }, []);
+
+  const handleSavePDF = useCallback(async () => {
+    if (!resultsRef.current || !analysis) return;
+    setSavingPDF(true);
+    try {
+      const dateStr = analysis.analysis_summary?.date_range || new Date().toLocaleDateString('he-IL');
+      const fileName = `MindTrack-ניתוח-${dateStr.replace(/\s/g, '-')}.pdf`;
+      const blob = await generatePDF(resultsRef.current, dateStr);
+
+      // Download the PDF
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      showToast('הניתוח נשמר כ-PDF ✓');
+    } catch (err) {
+      console.error('PDF generation error:', err);
+      showToast('שגיאה ביצירת PDF');
+    } finally {
+      setSavingPDF(false);
+    }
+  }, [analysis, showToast]);
+
+  const handleShare = useCallback(async () => {
+    if (!analysis) return;
+    try {
+      // Build a text summary for sharing
+      const summary = analysis.analysis_summary;
+      const insights = (analysis.key_insights || []).slice(0, 3);
+      let text = `📊 ניתוח MindTrack AI\n`;
+      text += `${summary?.date_range || ''} | ${summary?.total_events_analyzed || 0} אירועים\n\n`;
+      insights.forEach((ins, i) => {
+        text += `${ins.emoji} ${ins.title}\n`;
+        if (i < insights.length - 1) text += '\n';
+      });
+      text += `\n\n⚕️ ${analysis.medical_disclaimer || ''}`;
+
+      if (navigator.share) {
+        // Try sharing as PDF if possible
+        if (resultsRef.current) {
+          try {
+            const blob = await generatePDF(resultsRef.current, summary?.date_range || '');
+            const file = new File([blob], 'MindTrack-Analysis.pdf', { type: 'application/pdf' });
+            await navigator.share({ title: 'ניתוח MindTrack AI', text, files: [file] });
+            showToast('שותף בהצלחה ✓');
+            return;
+          } catch {
+            // Fallback to text-only share if file sharing not supported
+          }
+        }
+        await navigator.share({ title: 'ניתוח MindTrack AI', text });
+        showToast('שותף בהצלחה ✓');
+      }
+    } catch (err) {
+      // User cancelled share – not an error
+      if (err instanceof Error && err.name !== 'AbortError') {
+        console.error('Share error:', err);
+      }
+    }
+  }, [analysis, showToast]);
 
   // Page loading state
   if (loadingPrevious) {
@@ -751,7 +1005,7 @@ export default function AnalysisPage() {
 
       {/* Results */}
       {!loading && analysis && (
-        <div>
+        <div ref={resultsRef}>
           {/* Summary */}
           <SummaryCard summary={analysis.analysis_summary} />
 
@@ -830,12 +1084,18 @@ export default function AnalysisPage() {
             </p>
           </motion.div>
 
-          {/* Scroll down indicator */}
-          <div style={{ textAlign: 'center', padding: '16px 0' }}>
-            <ChevronDown size={20} style={{ color: '#D1D5DB' }} />
-          </div>
+          {/* Extra spacing for floating action bar */}
+          <div style={{ height: '60px' }} />
         </div>
       )}
+
+      {/* Floating Action Bar – save/share */}
+      {!loading && analysis && (
+        <ActionBar onSavePDF={handleSavePDF} onShare={handleShare} savingPDF={savingPDF} />
+      )}
+
+      {/* Toast notification */}
+      <Toast message={toast || ''} visible={!!toast} />
     </div>
   );
 }
