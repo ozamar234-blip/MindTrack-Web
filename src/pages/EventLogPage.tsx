@@ -100,21 +100,6 @@ const purple = '#8c2bee';
 const purpleBg = '#f7f6f8';
 const purpleGlow = 'rgba(140, 43, 238, 0.3)';
 
-const slideVariants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 200 : -200,
-    opacity: 0,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-  },
-  exit: (direction: number) => ({
-    x: direction > 0 ? -200 : 200,
-    opacity: 0,
-  }),
-};
-
 /* ─── Main EventLogPage ─── */
 export default function EventLogPage() {
   const { user } = useAuth();
@@ -292,13 +277,14 @@ export default function EventLogPage() {
             </div>
             <motion.div
               key={intensity}
-              initial={{ scale: 1.4, opacity: 0.5 }}
+              initial={{ scale: 1.2, opacity: 0.6 }}
               animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.15 }}
               style={{ textAlign: 'center', fontSize: '4rem', fontWeight: 800, color: purple }}
             >
               {intensity}
             </motion.div>
-            <div style={{ padding: '0 8px' }}>
+            <div style={{ padding: '0 4px' }}>
               <div style={{ position: 'relative', height: '12px', width: '100%' }}>
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #4ade80, #facc15, #f87171)', borderRadius: '9999px' }} />
                 <input
@@ -323,14 +309,11 @@ export default function EventLogPage() {
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>בחרו את התסמינים שחוויתם</p>
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
-              {symptoms.map((s, idx) => {
+              {symptoms.map((s) => {
                 const isSelected = selectedSymptoms.includes(s.name_he);
                 return (
                   <motion.button
                     key={s.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: idx * 0.03 }}
                     whileTap={{ scale: 0.92 }}
                     onClick={() => toggleSymptom(s.name_he)}
                     style={{
@@ -343,7 +326,7 @@ export default function EventLogPage() {
                       gap: '6px',
                       fontSize: '0.875rem',
                       fontFamily: 'inherit',
-                      border: isSelected ? `2px solid ${purple}` : '2px solid rgba(255,255,255,0.3)',
+                      border: isSelected ? `2px solid ${purple}` : '2px solid rgba(226,232,240,0.6)',
                       background: isSelected ? `${purple}1a` : 'rgba(255,255,255,0.7)',
                       backdropFilter: 'blur(8px)',
                       color: isSelected ? purple : 'var(--text-secondary)',
@@ -352,7 +335,7 @@ export default function EventLogPage() {
                   >
                     <span>{s.name_he}</span>
                     {isSelected && (
-                      <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="material-symbols-outlined" style={{ fontSize: '16px' }}>check</motion.span>
+                      <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>check</span>
                     )}
                   </motion.button>
                 );
@@ -370,14 +353,11 @@ export default function EventLogPage() {
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>סמנו את המזון שצרכתם לפני האירוע</p>
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
-              {FOOD_OPTIONS.map((f, idx) => {
+              {FOOD_OPTIONS.map((f) => {
                 const isSelected = selectedFoods.includes(f.value);
                 return (
                   <motion.button
                     key={f.value}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: idx * 0.02 }}
                     whileTap={{ scale: 0.92 }}
                     onClick={() => toggleFood(f.value)}
                     style={{
@@ -390,7 +370,7 @@ export default function EventLogPage() {
                       gap: '6px',
                       fontSize: '0.875rem',
                       fontFamily: 'inherit',
-                      border: isSelected ? `2px solid ${purple}` : '2px solid rgba(255,255,255,0.3)',
+                      border: isSelected ? `2px solid ${purple}` : '2px solid rgba(226,232,240,0.6)',
                       background: isSelected ? `${purple}1a` : 'rgba(255,255,255,0.7)',
                       backdropFilter: 'blur(8px)',
                       color: isSelected ? purple : 'var(--text-secondary)',
@@ -415,7 +395,7 @@ export default function EventLogPage() {
                 padding: '0 16px',
                 fontSize: '0.875rem',
                 fontFamily: 'inherit',
-                border: '1px solid rgba(255,255,255,0.3)',
+                border: '2px solid rgba(226,232,240,0.6)',
                 background: 'rgba(255,255,255,0.7)',
                 backdropFilter: 'blur(8px)',
                 outline: 'none',
@@ -423,7 +403,7 @@ export default function EventLogPage() {
                 textAlign: 'right',
               }}
               onFocus={e => { e.target.style.borderColor = purple; }}
-              onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.3)'; }}
+              onBlur={e => { e.target.style.borderColor = 'rgba(226,232,240,0.6)'; }}
             />
           </div>
         );
@@ -437,14 +417,11 @@ export default function EventLogPage() {
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>בחרו את המיקום שלכם בזמן האירוע</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
-              {LOCATION_OPTIONS.map((loc, idx) => {
+              {LOCATION_OPTIONS.map((loc) => {
                 const isSelected = locationKey === loc.value;
                 return (
                   <motion.button
                     key={loc.value}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.05 }}
                     whileTap={{ scale: 0.92 }}
                     onClick={() => setLocationKey(loc.value)}
                     style={{
@@ -456,7 +433,7 @@ export default function EventLogPage() {
                       borderRadius: '16px',
                       cursor: 'pointer',
                       fontFamily: 'inherit',
-                      border: isSelected ? `2px solid ${purple}` : '2px solid rgba(255,255,255,0.3)',
+                      border: isSelected ? `2px solid ${purple}` : '2px solid rgba(226,232,240,0.6)',
                       background: isSelected ? `${purple}1a` : 'rgba(255,255,255,0.7)',
                       backdropFilter: 'blur(8px)',
                       transition: 'all 0.2s ease',
@@ -488,23 +465,24 @@ export default function EventLogPage() {
               <span style={{ fontSize: '5rem' }}>😴</span>
               <motion.div
                 key={sleepHours}
-                initial={{ scale: 1.3, opacity: 0.5 }}
+                initial={{ scale: 1.2, opacity: 0.6 }}
                 animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.15 }}
                 style={{ fontSize: '2.5rem', fontWeight: 800, color: purple }}
               >
                 {sleepHours} שעות
               </motion.div>
             </div>
-            <div style={{ padding: '0 8px' }}>
+            <div style={{ padding: '0 4px' }}>
               <div style={{ position: 'relative', height: '12px', width: '100%' }}>
-                <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to left, ${purple}44, ${purple})`, borderRadius: '9999px' }} />
+                <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to right, ${purple}44, ${purple})`, borderRadius: '9999px' }} />
                 <input
                   type="range" min={0} max={14} step={1} value={sleepHours}
                   onChange={e => setSleepHours(+e.target.value)}
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '12px', WebkitAppearance: 'none', appearance: 'none', background: 'transparent', cursor: 'pointer' }}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '12px', WebkitAppearance: 'none', appearance: 'none', background: 'transparent', cursor: 'pointer', direction: 'ltr' }}
                 />
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-light)', direction: 'rtl' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px', fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-light)', direction: 'ltr' }}>
                 <span>0</span><span>7</span><span>14</span>
               </div>
             </div>
@@ -530,17 +508,17 @@ export default function EventLogPage() {
                 fontSize: '0.9375rem',
                 fontFamily: 'inherit',
                 outline: 'none',
-                border: '1px solid rgba(255,255,255,0.3)',
+                border: '2px solid rgba(226,232,240,0.6)',
                 background: 'rgba(255,255,255,0.7)',
                 backdropFilter: 'blur(12px)',
-                minHeight: '160px',
+                minHeight: '140px',
                 resize: 'vertical',
                 color: 'var(--text-primary)',
                 textAlign: 'right',
                 lineHeight: 1.7,
               }}
               onFocus={e => { e.target.style.borderColor = purple; e.target.style.boxShadow = `0 0 0 3px ${purple}1a`; }}
-              onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.3)'; e.target.style.boxShadow = 'none'; }}
+              onBlur={e => { e.target.style.borderColor = 'rgba(226,232,240,0.6)'; e.target.style.boxShadow = 'none'; }}
             />
 
             {/* Summary */}
@@ -548,7 +526,7 @@ export default function EventLogPage() {
               background: 'rgba(255,255,255,0.6)',
               borderRadius: '16px',
               padding: '16px',
-              border: '1px solid rgba(255,255,255,0.3)',
+              border: '1px solid rgba(226,232,240,0.4)',
             }}>
               <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: purple, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>סיכום</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
@@ -590,32 +568,28 @@ export default function EventLogPage() {
     <div style={{
       background: purpleBg,
       fontFamily: "'Inter', 'Heebo', sans-serif",
-      minHeight: '100vh',
+      minHeight: '100dvh',
       display: 'flex',
       flexDirection: 'column',
-      maxWidth: 'var(--max-width)',
+      width: '100%',
+      maxWidth: '480px',
       margin: '0 auto',
       position: 'relative',
       overflow: 'hidden',
     }}>
       {/* Header */}
-      <motion.header
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '16px 20px',
-          position: 'sticky',
-          top: 0,
-          zIndex: 10,
-          background: `${purpleBg}e6`,
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-        }}
-      >
+      <header style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '14px 16px',
+        position: 'sticky',
+        top: 0,
+        zIndex: 10,
+        background: `${purpleBg}e6`,
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+      }}>
         <motion.button whileTap={{ scale: 0.85 }} onClick={() => navigate('/')} style={{ display: 'flex', width: '40px', height: '40px', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', cursor: 'pointer', background: 'none', border: 'none', color: 'var(--text-primary)' }}>
           <span className="material-symbols-outlined">close</span>
         </motion.button>
@@ -624,10 +598,10 @@ export default function EventLogPage() {
           <span style={{ fontSize: '0.7rem', color: purple, fontWeight: 600 }}>{step} מתוך {TOTAL_STEPS}</span>
         </div>
         <div style={{ width: '40px' }} />
-      </motion.header>
+      </header>
 
       {/* Progress Bar */}
-      <div style={{ padding: '0 20px 8px', display: 'flex', gap: '4px' }}>
+      <div style={{ padding: '0 16px 8px', display: 'flex', gap: '4px' }}>
         {Array.from({ length: TOTAL_STEPS }, (_, i) => (
           <div key={i} style={{
             flex: 1,
@@ -640,16 +614,20 @@ export default function EventLogPage() {
       </div>
 
       {/* Step Content */}
-      <div style={{ flex: 1, padding: '16px 20px', position: 'relative', minHeight: '400px' }}>
+      <div style={{ flex: 1, padding: '12px 16px', position: 'relative', overflowY: 'auto' }}>
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={step}
             custom={direction}
-            variants={slideVariants}
+            variants={{
+              enter: (dir: number) => ({ opacity: 0, x: dir > 0 ? 60 : -60 }),
+              center: { opacity: 1, x: 0 },
+              exit: (dir: number) => ({ opacity: 0, x: dir > 0 ? -60 : 60 }),
+            }}
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
+            transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
             style={{ width: '100%' }}
           >
             {renderStep()}
@@ -659,13 +637,11 @@ export default function EventLogPage() {
 
       {/* Bottom Navigation */}
       <div style={{
-        padding: '16px 20px',
-        paddingBottom: '32px',
+        padding: '12px 16px',
+        paddingBottom: '28px',
         display: 'flex',
         gap: '12px',
-        background: `linear-gradient(to top, ${purpleBg} 60%, transparent)`,
-        position: 'sticky',
-        bottom: 0,
+        background: `linear-gradient(to top, ${purpleBg} 70%, transparent)`,
       }}>
         {step > 1 && (
           <motion.button
@@ -673,7 +649,7 @@ export default function EventLogPage() {
             onClick={goBack}
             style={{
               flex: 1,
-              height: '54px',
+              height: '52px',
               borderRadius: '16px',
               border: `2px solid ${purple}33`,
               background: 'rgba(255,255,255,0.7)',
@@ -699,7 +675,7 @@ export default function EventLogPage() {
           disabled={saving}
           style={{
             flex: step > 1 ? 1.5 : 1,
-            height: '54px',
+            height: '52px',
             borderRadius: '16px',
             border: 'none',
             background: purple,
