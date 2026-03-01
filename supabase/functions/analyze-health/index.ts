@@ -1,7 +1,7 @@
 // MindTrack AI Analysis Engine – Supabase Edge Function
 // Calls Claude API to analyze health event patterns
 // Deploy: supabase functions deploy analyze-health
-// Set secret: supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
+// Set secret: supabase secrets set ANTHROPIC_API_KEY=sk-ant-... (or CLAUDE_API_KEY)
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
@@ -361,10 +361,10 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
+    const apiKey = Deno.env.get('ANTHROPIC_API_KEY') || Deno.env.get('CLAUDE_API_KEY');
     if (!apiKey) {
       return new Response(
-        JSON.stringify({ error: 'ANTHROPIC_API_KEY not configured. Set it with: supabase secrets set ANTHROPIC_API_KEY=sk-ant-...' }),
+        JSON.stringify({ error: 'API key not configured. Set ANTHROPIC_API_KEY or CLAUDE_API_KEY via supabase secrets set.' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
