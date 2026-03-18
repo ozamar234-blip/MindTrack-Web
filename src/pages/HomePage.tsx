@@ -378,6 +378,53 @@ export default function HomePage() {
         </motion.div>
       </div>
 
+      {/* Daily Check-in CTA */}
+      {!latestCheckin && !loading && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35, type: 'spring', stiffness: 200, damping: 25 }}
+          style={{ padding: '0 24px 8px' }}
+        >
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={() => navigate('/checkin')}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              padding: '20px 24px',
+              borderRadius: '20px',
+              background: 'linear-gradient(135deg, #ecfdf5 0%, #e0e7ff 100%)',
+              border: '1px solid rgba(42, 25, 230, 0.08)',
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              textAlign: 'right',
+            }}
+          >
+            <div style={{
+              width: '48px',
+              height: '48px',
+              borderRadius: '16px',
+              background: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+              flexShrink: 0,
+            }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '24px', color: '#10b981' }}>self_improvement</span>
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '2px' }}>עדיין לא עשית צ׳ק-אין היום</p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>קח רגע לבדוק איך אתה מרגיש</p>
+            </div>
+            <span className="material-symbols-outlined" style={{ fontSize: '20px', color: 'var(--text-light)' }}>arrow_back</span>
+          </motion.button>
+        </motion.div>
+      )}
+
       {/* Quick Actions Card */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}

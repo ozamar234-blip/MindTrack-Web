@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, NavLink, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { ToastProvider } from './components/Toast';
 
 // Eagerly loaded pages (auth + shell)
 import LoginPage from './pages/LoginPage';
@@ -46,23 +47,10 @@ function BottomNav() {
   if (hiddenPaths.some(p => location.pathname.startsWith(p))) return null;
 
   return (
-    <nav style={{
-      position: 'fixed',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      zIndex: 50,
-      maxWidth: 'var(--max-width)',
-      margin: '0 auto',
-      background: 'rgba(255, 255, 255, 0.8)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)',
-      borderTop: '1px solid rgba(226, 232, 240, 0.8)',
-      padding: '12px 24px 24px',
-    }}>
+    <nav className="floating-nav">
       <div style={{
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         alignItems: 'center',
       }}>
         {navItems.map(item => {
@@ -72,16 +60,31 @@ function BottomNav() {
               key={item.path}
               to={item.path}
               end={item.path === '/'}
+              className={isActive ? 'active' : ''}
               style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '4px',
+                gap: '2px',
                 color: isActive ? 'var(--primary)' : 'var(--text-light)',
                 textDecoration: 'none',
                 transition: 'color 0.2s ease',
+                padding: '8px 0',
+                position: 'relative',
               }}
             >
+              {isActive && (
+                <div style={{
+                  position: 'absolute',
+                  top: '-8px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '24px',
+                  height: '3px',
+                  background: 'var(--primary)',
+                  borderRadius: '2px',
+                }} />
+              )}
               <span
                 className={`material-symbols-outlined${isActive ? ' fill-1' : ''}`}
                 style={{ fontSize: '24px' }}
@@ -158,9 +161,11 @@ export default function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <AuthProvider>
-          <AppRoutes />
-        </AuthProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <AppRoutes />
+          </AuthProvider>
+        </ToastProvider>
       </BrowserRouter>
     </ErrorBoundary>
   );

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useInsights } from '../hooks/useInsights';
 import { getConfidenceLabel } from '../utils/helpers';
@@ -27,159 +28,209 @@ export default function InsightsPage() {
   };
 
   return (
-    <div className="page" style={{
-      background: 'var(--bg-warm)',
+    <div style={{
+      position: 'relative',
+      display: 'flex',
       minHeight: '100vh',
-      paddingBottom: '120px'
+      width: '100%',
+      flexDirection: 'column',
+      maxWidth: 'var(--max-width)',
+      margin: '0 auto',
+      overflow: 'hidden',
+      paddingBottom: '96px',
+      background: 'radial-gradient(circle at top right, #e0e7ff 0%, #f6f6f8 100%)',
     }}>
       {/* Header */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '32px',
-        paddingTop: '8px'
-      }}>
-        <div style={{
-          width: '44px',
-          height: '44px',
-          borderRadius: '12px',
-          background: 'white',
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        style={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
-        }}>
-          <span style={{ fontSize: '1.2rem' }}>💡</span>
+          padding: '24px',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{
+            width: '44px',
+            height: '44px',
+            borderRadius: '14px',
+            background: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '22px', color: 'var(--primary)' }}>psychology</span>
+          </div>
+          <h1 style={{ fontSize: '1.25rem', fontWeight: 700 }}>תובנות AI</h1>
         </div>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 900 }}>תובנות AI</h1>
-        <div style={{ width: '44px' }}></div>
+        <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>
+          ניתוח דפוסים אישי
+        </span>
+      </motion.div>
+
+      <div style={{ padding: '0 24px' }}>
+        {/* Generate Button */}
+        <motion.button
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={handleGenerate}
+          disabled={loading}
+          style={{
+            marginBottom: '16px',
+            padding: '18px',
+            fontSize: '1.1rem',
+            borderRadius: '20px',
+            background: 'var(--primary)',
+            color: 'white',
+            boxShadow: '0 10px 30px -10px rgba(42, 25, 230, 0.5)',
+            border: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+            width: '100%',
+            fontWeight: 700,
+            cursor: 'pointer',
+            fontFamily: 'inherit',
+          }}
+        >
+          <Sparkles size={20} />
+          {loading ? 'מייצר תובנות...' : 'צור תובנות חדשות'}
+        </motion.button>
+
+        {/* Deep AI Analysis CTA */}
+        <motion.button
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={() => navigate('/analysis')}
+          className="glass"
+          style={{
+            marginBottom: '32px',
+            padding: '16px',
+            fontSize: '0.95rem',
+            borderRadius: '16px',
+            color: 'var(--primary)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+            width: '100%',
+            fontWeight: 700,
+            cursor: 'pointer',
+            fontFamily: 'inherit',
+            border: '1px solid rgba(42,25,230,0.1)',
+          }}
+        >
+          <Brain size={20} />
+          ניתוח AI מעמיק (7 ממדים)
+        </motion.button>
+
+        {/* Content */}
+        {loading && insights.length === 0 ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '16px' }}>
+            {[1, 2, 3].map(i => (
+              <div key={i} className="skeleton" style={{ height: '120px', borderRadius: '20px' }} />
+            ))}
+          </div>
+        ) : insights.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            style={{
+              padding: '60px 24px',
+              textAlign: 'center',
+              background: 'rgba(255,255,255,0.6)',
+              backdropFilter: 'blur(8px)',
+              borderRadius: '24px',
+              border: '1px solid rgba(255,255,255,0.3)',
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '56px', color: 'var(--text-light)', marginBottom: '16px', display: 'block' }}>
+              neurology
+            </span>
+            <p style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '8px' }}>
+              עדיין אין מספיק נתונים
+            </p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6 }}>
+              רשום לפחות {MIN_EVENTS_FOR_ANALYSIS} אירועים בחודש האחרון<br />כדי שנוכל למצוא דפוסים
+            </p>
+          </motion.div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <AnimatePresence>
+              {insights.map((insight, i) => (
+                <motion.div
+                  key={insight.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: 100 }}
+                  transition={{ delay: i * 0.05 }}
+                  onClick={() => { if (!insight.is_read) markRead(insight.id); }}
+                  style={{
+                    padding: '24px',
+                    borderRadius: '20px',
+                    background: insight.is_read ? 'white' : 'linear-gradient(135deg, #FDF7FF, #FFFFFF)',
+                    border: insight.is_read ? '1px solid #f1f5f9' : '2px solid rgba(42,25,230,0.1)',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                    position: 'relative',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                    <span style={{
+                      background: 'var(--primary-light)',
+                      color: 'var(--primary)',
+                      padding: '4px 12px',
+                      borderRadius: '10px',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                    }}>
+                      {insight.category || insight.insight_type}
+                    </span>
+                    {!insight.is_read && (
+                      <div style={{ width: '8px', height: '8px', background: 'var(--primary)', borderRadius: '50%' }} />
+                    )}
+                  </div>
+
+                  <p style={{ fontSize: '1rem', lineHeight: 1.6, fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px' }}>
+                    {insight.insight_text}
+                  </p>
+
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    fontSize: '0.8rem',
+                    color: 'var(--text-light)',
+                    fontWeight: 600,
+                    borderTop: '1px solid #f1f5f9',
+                    paddingTop: '16px',
+                  }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>analytics</span>
+                      ביטחון: {insight.confidence ? getConfidenceLabel(insight.confidence) : 'לא ידוע'}
+                    </span>
+                    <motion.button
+                      whileTap={{ scale: 0.85 }}
+                      onClick={e => { e.stopPropagation(); dismiss(insight.id); }}
+                      style={{ color: 'var(--text-light)', cursor: 'pointer', background: 'none', border: 'none', display: 'flex', padding: '4px' }}
+                    >
+                      <X size={16} />
+                    </motion.button>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
       </div>
-
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <p style={{ color: '#666', fontSize: '1rem', lineHeight: 1.5 }}>
-          ניתוח דפוסים אישי בעזרת בינה מלאכותית
-        </p>
-      </div>
-
-      <button onClick={handleGenerate} disabled={loading} style={{
-        marginBottom: '40px',
-        padding: '24px',
-        fontSize: '1.3rem',
-        borderRadius: '32px',
-        background: 'linear-gradient(135deg, #7F13EC, #2A19E6)',
-        color: 'white',
-        boxShadow: '0 12px 32px rgba(127, 19, 236, 0.3)',
-        border: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '12px',
-        width: '100%',
-        fontWeight: 900,
-        cursor: 'pointer'
-      }}>
-        <Sparkles size={24} />
-        {loading ? 'מייצר תובנות...' : 'צור תובנות חדשות'}
-      </button>
-
-      {/* Deep AI Analysis CTA */}
-      <button onClick={() => navigate('/analysis')} style={{
-        marginBottom: '40px',
-        padding: '18px',
-        fontSize: '1.1rem',
-        borderRadius: '24px',
-        background: 'white',
-        color: '#7F13EC',
-        boxShadow: '0 4px 16px rgba(127, 19, 236, 0.1)',
-        border: '2px solid #E9D5FF',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '10px',
-        width: '100%',
-        fontWeight: 800,
-        cursor: 'pointer',
-      }}>
-        <Brain size={22} />
-        ניתוח AI מעמיק (7 ממדים)
-      </button>
-
-      {loading && insights.length === 0 ? (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 0' }}>
-          <div className="spinner" style={{ width: '50px', height: '50px', borderTopColor: 'var(--primary)' }} />
-          <p style={{ marginTop: '24px', fontWeight: 800, color: '#333' }}>מעבד את ההיסטוריה שלך...</p>
-        </div>
-      ) : insights.length === 0 ? (
-        <div style={{
-          padding: '60px 24px',
-          textAlign: 'center',
-          borderRadius: '40px',
-          background: 'rgba(255,255,255,0.5)',
-          border: '2px dashed #E0E0E0'
-        }}>
-          <div style={{ fontSize: '5rem', marginBottom: '20px' }}>🧠</div>
-          <p style={{ fontSize: '1.1rem', fontWeight: 800, color: '#333', lineHeight: 1.6 }}>
-            עדיין אין מספיק נתונים.<br />
-            רשום לפחות {MIN_EVENTS_FOR_ANALYSIS} אירועים בחודש האחרון כדי שנוכל למצוא דפוסים.
-          </p>
-        </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {insights.map(insight => (
-            <div
-              key={insight.id}
-              onClick={() => { if (!insight.is_read) markRead(insight.id); }}
-              style={{
-                padding: '32px',
-                borderRadius: '32px',
-                background: insight.is_read ? 'white' : 'linear-gradient(135deg, #FDF7FF, #FFFFFF)',
-                border: insight.is_read ? '1px solid #F0F0F0' : '2px solid #F3EFFF',
-                boxShadow: '0 12px 40px rgba(0,0,0,0.04)',
-                position: 'relative',
-                cursor: 'pointer'
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-                <div style={{
-                  background: 'var(--primary-light)',
-                  color: 'var(--primary)',
-                  padding: '6px 16px',
-                  borderRadius: '12px',
-                  fontSize: '0.85rem',
-                  fontWeight: 900
-                }}>
-                  {insight.category || insight.insight_type}
-                </div>
-                {!insight.is_read && (
-                  <div style={{ width: '10px', height: '10px', background: 'var(--primary)', borderRadius: '50%' }} />
-                )}
-              </div>
-
-              <div style={{ fontSize: '1.2rem', lineHeight: 1.5, fontWeight: 800, color: 'black', marginBottom: '24px' }}>
-                {insight.insight_text}
-              </div>
-
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontSize: '0.85rem',
-                color: '#8E8E93',
-                fontWeight: 700,
-                borderTop: '1px solid #F5F5F9',
-                paddingTop: '20px'
-              }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  📊 ביטחון: {insight.confidence ? getConfidenceLabel(insight.confidence) : 'לא ידוע'}
-                </span>
-                <div onClick={e => { e.stopPropagation(); dismiss(insight.id); }} style={{ color: '#DDD', cursor: 'pointer' }}>
-                  <X size={18} />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
