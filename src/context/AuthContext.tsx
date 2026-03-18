@@ -32,13 +32,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const p = await getProfile(user.id);
         setProfile(p);
       } catch {
-        // Profile might not exist yet (trigger delay) — retry once after 1s
-        setTimeout(async () => {
-          try {
-            const p = await getProfile(user.id);
-            setProfile(p);
-          } catch { /* still not ready */ }
-        }, 1000);
+        // Profile might not exist yet (DB trigger delay after signup) — retry once after 1.5s
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        try {
+          const p = await getProfile(user.id);
+          setProfile(p);
+        } catch (retryErr) {
+          console.error('Profile fetch failed after retry:', retryErr);
+        }
       }
     }
   };

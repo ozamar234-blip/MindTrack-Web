@@ -1,22 +1,37 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, NavLink, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
-// Pages
+// Eagerly loaded pages (auth + shell)
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import HomePage from './pages/HomePage';
-import EventLogPage from './pages/EventLogPage';
-import CheckinPage from './pages/CheckinPage';
-import DashboardPage from './pages/DashboardPage';
-import BreathingPage from './pages/BreathingPage';
-import InsightsPage from './pages/InsightsPage';
-import AnalysisPage from './pages/AnalysisPage';
-import HistoryPage from './pages/HistoryPage';
-import SettingsPage from './pages/SettingsPage';
+
+// Lazily loaded pages (code splitting)
+const EventLogPage = lazy(() => import('./pages/EventLogPage'));
+const CheckinPage = lazy(() => import('./pages/CheckinPage'));
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const BreathingPage = lazy(() => import('./pages/BreathingPage'));
+const InsightsPage = lazy(() => import('./pages/InsightsPage'));
+const AnalysisPage = lazy(() => import('./pages/AnalysisPage'));
+const HistoryPage = lazy(() => import('./pages/HistoryPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 
 // Styles
 import './styles/global.css';
+
+function PageLoader() {
+  return (
+    <div className="loading-page">
+      <div>
+        <div className="spinner" />
+        <p style={{ textAlign: 'center', color: '#636E72', marginTop: 8 }}>טוען...</p>
+      </div>
+    </div>
+  );
+}
 
 const navItems = [
   { path: '/', label: 'בית', icon: 'home' },
@@ -86,14 +101,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="loading-page">
-        <div>
-          <div className="spinner" />
-          <p style={{ textAlign: 'center', color: '#636E72', marginTop: 8 }}>טוען...</p>
-        </div>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   if (!user) {
@@ -119,26 +127,28 @@ function AppRoutes() {
 
   return (
     <div className="app-container">
-      <Routes>
-        {/* Auth Routes */}
-        <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
-        <Route path="/register" element={user ? <Navigate to="/" replace /> : <RegisterPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          {/* Auth Routes */}
+          <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
+          <Route path="/register" element={user ? <Navigate to="/" replace /> : <RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-        {/* Protected Routes */}
-        <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-        <Route path="/event-log" element={<ProtectedRoute><EventLogPage /></ProtectedRoute>} />
-        <Route path="/checkin" element={<ProtectedRoute><CheckinPage /></ProtectedRoute>} />
-        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-        <Route path="/breathing" element={<ProtectedRoute><BreathingPage /></ProtectedRoute>} />
-        <Route path="/insights" element={<ProtectedRoute><InsightsPage /></ProtectedRoute>} />
-        <Route path="/analysis" element={<ProtectedRoute><AnalysisPage /></ProtectedRoute>} />
-        <Route path="/history" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
-        <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+          {/* Protected Routes */}
+          <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+          <Route path="/event-log" element={<ProtectedRoute><EventLogPage /></ProtectedRoute>} />
+          <Route path="/checkin" element={<ProtectedRoute><CheckinPage /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+          <Route path="/breathing" element={<ProtectedRoute><BreathingPage /></ProtectedRoute>} />
+          <Route path="/insights" element={<ProtectedRoute><InsightsPage /></ProtectedRoute>} />
+          <Route path="/analysis" element={<ProtectedRoute><AnalysisPage /></ProtectedRoute>} />
+          <Route path="/history" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
 
-        {/* Catch all */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+          {/* Catch all */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
       <BottomNav />
     </div>
   );
@@ -146,10 +156,12 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }

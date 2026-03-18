@@ -5,14 +5,20 @@ import type { AIInsight } from '../types';
 export function useInsights(userId: string | undefined) {
   const [insights, setInsights] = useState<AIInsight[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchInsights = useCallback(async () => {
     if (!userId) return;
     setLoading(true);
+    setError(null);
     try {
       const data = await insightsApi.getInsights(userId);
       setInsights(data);
-    } catch { /* silent */ } finally {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'שגיאה בטעינת תובנות';
+      setError(msg);
+      console.error('fetchInsights error:', err);
+    } finally {
       setLoading(false);
     }
   }, [userId]);
@@ -41,5 +47,5 @@ export function useInsights(userId: string | undefined) {
     setInsights(prev => prev.filter(i => i.id !== id));
   }, []);
 
-  return { insights, loading, fetchInsights, generateInsights, markRead, dismiss };
+  return { insights, loading, error, fetchInsights, generateInsights, markRead, dismiss };
 }

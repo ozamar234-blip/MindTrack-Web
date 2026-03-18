@@ -5,14 +5,20 @@ import type { DailyCheckin, CheckinFormData } from '../types';
 export function useCheckins(userId: string | undefined) {
   const [checkins, setCheckins] = useState<DailyCheckin[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchTodayCheckins = useCallback(async () => {
     if (!userId) return;
     setLoading(true);
+    setError(null);
     try {
       const data = await checkinsApi.getTodayCheckins(userId);
       setCheckins(data);
-    } catch { /* silent */ } finally {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'שגיאה בטעינת צ\'ק-אין';
+      setError(msg);
+      console.error('fetchTodayCheckins error:', err);
+    } finally {
       setLoading(false);
     }
   }, [userId]);
@@ -31,5 +37,5 @@ export function useCheckins(userId: string | undefined) {
     }
   }, [userId]);
 
-  return { checkins, loading, fetchTodayCheckins, createCheckin };
+  return { checkins, loading, error, fetchTodayCheckins, createCheckin };
 }
