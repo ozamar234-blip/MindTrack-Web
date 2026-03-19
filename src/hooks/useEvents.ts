@@ -10,6 +10,7 @@ export function useEvents(userId: string | undefined) {
   const fetchEvents = useCallback(async (limit = 50) => {
     if (!userId) return;
     setLoading(true);
+    setError(null);
     try {
       const data = await eventsApi.getEvents(userId, limit);
       setEvents(data);

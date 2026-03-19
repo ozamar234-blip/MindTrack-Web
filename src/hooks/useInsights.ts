@@ -31,6 +31,8 @@ export function useInsights(userId: string | undefined) {
       setInsights(data);
       return data;
     } catch (err) {
+      const msg = err instanceof Error ? err.message : 'שגיאה ביצירת תובנות';
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);

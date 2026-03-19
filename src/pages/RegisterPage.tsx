@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useSignUp } from '../hooks/useAuth';
 
+type SignUpData = { session: unknown };
+
 export default function RegisterPage() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -11,6 +13,7 @@ export default function RegisterPage() {
   const { signUp, loading, error } = useSignUp();
   const navigate = useNavigate();
   const [localError, setLocalError] = useState('');
+  const [showVerification, setShowVerification] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,17 +23,87 @@ export default function RegisterPage() {
       return;
     }
     try {
-      await signUp(email, password, fullName);
+      const data = await signUp(email, password, fullName) as SignUpData | undefined;
+      if (data && !data.session) {
+        setShowVerification(true);
+        return;
+      }
       navigate('/');
     } catch { /* error handled by hook */ }
   };
+
+  if (showVerification) {
+    return (
+      <div style={{
+        position: 'relative',
+        width: '100%',
+        maxWidth: '430px',
+        minHeight: '100dvh',
+        margin: '0 auto',
+        background: 'linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 40%, #fae8ff 100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px',
+      }}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+          style={{
+            background: 'rgba(255,255,255,0.7)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.3)',
+            padding: '48px 32px',
+            borderRadius: '24px',
+            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.1)',
+            textAlign: 'center',
+            maxWidth: '360px',
+            width: '100%',
+          }}
+        >
+          <span className="material-symbols-outlined" style={{
+            fontSize: '64px',
+            color: 'var(--primary)',
+            marginBottom: '24px',
+            display: 'block',
+          }}>mark_email_read</span>
+          <h1 style={{
+            fontSize: '1.5rem',
+            fontWeight: 700,
+            marginBottom: '12px',
+          }}>בדקו את המייל</h1>
+          <p style={{
+            color: 'var(--text-secondary)',
+            fontSize: '1rem',
+            lineHeight: 1.6,
+            marginBottom: '32px',
+          }}>נשלח אליך מייל אימות, בדוק את תיבת הדואר שלך</p>
+          <Link to="/login" style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            color: 'var(--primary)',
+            fontWeight: 700,
+            fontSize: '1rem',
+            textDecoration: 'none',
+          }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>arrow_forward</span>
+            חזרה להתחברות
+          </Link>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div style={{
       position: 'relative',
       width: '100%',
       maxWidth: '430px',
-      minHeight: '100vh',
+      minHeight: '100dvh',
       margin: '0 auto',
       background: 'linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 40%, #fae8ff 100%)',
       overflow: 'hidden',
@@ -95,7 +168,8 @@ export default function RegisterPage() {
         padding: '0 24px 48px',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
+        paddingTop: '8vh',
       }}>
         <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.97 }}

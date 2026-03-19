@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useEvents } from '../hooks/useEvents';
+import { useToast } from '../components/Toast';
 import { supabase } from '../api/supabase';
 import { DEFAULT_SYMPTOMS, FOOD_OPTIONS, LOCATION_OPTIONS } from '../utils/constants';
 
@@ -105,6 +106,7 @@ export default function EventLogPage() {
   const { user } = useAuth();
   const { createEvent } = useEvents(user?.id);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
@@ -195,7 +197,7 @@ export default function EventLogPage() {
 
   const handleSave = async () => {
     if (!user?.id) {
-      alert('לא מחובר — יש להתחבר מחדש');
+      showToast('לא מחובר — יש להתחבר מחדש', 'error');
       return;
     }
     setSaving(true);
@@ -220,7 +222,7 @@ export default function EventLogPage() {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : typeof err === 'object' && err !== null && 'message' in err ? String((err as Record<string, unknown>).message) : JSON.stringify(err);
       console.error('Event save error:', err);
-      alert(`שגיאה בשמירה:\n${msg}`);
+      showToast(`שגיאה בשמירה: ${msg}`, 'error');
     } finally {
       setSaving(false);
     }

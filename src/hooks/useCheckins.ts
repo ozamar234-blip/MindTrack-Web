@@ -26,6 +26,7 @@ export function useCheckins(userId: string | undefined) {
   const createCheckin = useCallback(async (formData: CheckinFormData) => {
     if (!userId) return;
     setLoading(true);
+    setError(null);
     try {
       const newCheckin = await checkinsApi.createCheckin(userId, formData);
       setCheckins(prev => [...prev, newCheckin]);

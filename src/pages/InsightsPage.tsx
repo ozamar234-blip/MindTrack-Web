@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useInsights } from '../hooks/useInsights';
+import { useToast } from '../components/Toast';
 import { getConfidenceLabel } from '../utils/helpers';
 import { MIN_EVENTS_FOR_ANALYSIS } from '../utils/constants';
 import { Sparkles, X, Brain } from 'lucide-react';
@@ -11,6 +12,7 @@ export default function InsightsPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { insights, loading, fetchInsights, generateInsights, markRead, dismiss } = useInsights(user?.id);
+  const { showToast } = useToast();
 
   useEffect(() => {
     fetchInsights();
@@ -20,10 +22,10 @@ export default function InsightsPage() {
     try {
       const result = await generateInsights();
       if (!result || result.length === 0) {
-        alert(`צריך לפחות ${MIN_EVENTS_FOR_ANALYSIS} אירועים בחודש האחרון כדי ליצור תובנות`);
+        showToast(`צריך לפחות ${MIN_EVENTS_FOR_ANALYSIS} אירועים בחודש האחרון כדי ליצור תובנות`, 'info');
       }
     } catch {
-      alert('שגיאה ביצירת תובנות');
+      showToast('שגיאה ביצירת תובנות', 'error');
     }
   };
 

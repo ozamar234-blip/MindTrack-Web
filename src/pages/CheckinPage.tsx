@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useCheckins } from '../hooks/useCheckins';
+import { useToast } from '../components/Toast';
 import { MOOD_EMOJIS, INFLUENCE_OPTIONS } from '../utils/constants';
 
 const ENERGY_OPTIONS = [
@@ -33,6 +34,7 @@ export default function CheckinPage() {
   const { user } = useAuth();
   const { createCheckin } = useCheckins(user?.id);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const hour = new Date().getHours();
   const checkinType = hour < 14 ? 'morning' : 'evening';
@@ -67,7 +69,7 @@ export default function CheckinPage() {
       });
       navigate('/');
     } catch {
-      alert('שגיאה בשמירה');
+      showToast('שגיאה בשמירה', 'error');
     } finally {
       setSaving(false);
     }

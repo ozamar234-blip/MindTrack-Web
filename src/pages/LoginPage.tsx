@@ -70,7 +70,8 @@ export default function LoginPage() {
         padding: '0 24px 48px',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
+        paddingTop: '8vh',
       }}>
         <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.97 }}
