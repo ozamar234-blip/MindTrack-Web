@@ -4,6 +4,169 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../api/supabase';
 
+// ═══════════════════════════════════════════
+// Ambient Sound Generator using Web Audio API
+// ═══════════════════════════════════════════
+
+const AMBIENT_SOUNDS = [
+  { id: 'rain', label: 'גשם', emoji: '🌧️' },
+  { id: 'ocean', label: 'אוקיינוס', emoji: '🌊' },
+  { id: 'forest', label: 'יער', emoji: '🌿' },
+  { id: 'wind', label: 'רוח', emoji: '💨' },
+  { id: 'none', label: 'ללא', emoji: '🔇' },
+];
+
+function createAmbientSound(type: string, audioCtx: AudioContext): { nodes: AudioNode[]; stop: () => void } {
+  const nodes: AudioNode[] = [];
+  const gainNode = audioCtx.createGain();
+  gainNode.gain.value = 0;
+  gainNode.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 1);
+  gainNode.connect(audioCtx.destination);
+  nodes.push(gainNode);
+
+  if (type === 'rain') {
+    // Brown noise + filtered white noise for rain
+    const bufferSize = 2 * audioCtx.sampleRate;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let lastOut = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      data[i] = (lastOut + 0.02 * white) / 1.02;
+      lastOut = data[i];
+      data[i] *= 3.5;
+    }
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.value = 800;
+    source.connect(filter);
+    filter.connect(gainNode);
+    source.start();
+    nodes.push(source);
+  } else if (type === 'ocean') {
+    // Oscillator with LFO modulation for waves
+    const osc = audioCtx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = 0.1;
+    const bufferSize = 2 * audioCtx.sampleRate;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let lastOut = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      data[i] = (lastOut + 0.01 * white) / 1.01;
+      lastOut = data[i];
+      data[i] *= 3.5;
+    }
+    const noiseSource = audioCtx.createBufferSource();
+    noiseSource.buffer = buffer;
+    noiseSource.loop = true;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 500;
+    // LFO for wave-like effect
+    const lfo = audioCtx.createOscillator();
+    lfo.frequency.value = 0.15;
+    const lfoGain = audioCtx.createGain();
+    lfoGain.gain.value = 300;
+    lfo.connect(lfoGain);
+    lfoGain.connect(filter.frequency);
+    lfo.start();
+    noiseSource.connect(filter);
+    filter.connect(gainNode);
+    noiseSource.start();
+    nodes.push(noiseSource, lfo);
+  } else if (type === 'forest') {
+    // Soft pink noise for forest ambience
+    const bufferSize = 2 * audioCtx.sampleRate;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      b3 = 0.86650 * b3 + white * 0.3104856;
+      b4 = 0.55000 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.0168980;
+      data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+      b6 = white * 0.115926;
+    }
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 1000;
+    filter.Q.value = 0.5;
+    source.connect(filter);
+    filter.connect(gainNode);
+    source.start();
+    nodes.push(source);
+    // Add gentle bird-like chirps (high-freq sine blips)
+    const chirpOsc = audioCtx.createOscillator();
+    chirpOsc.type = 'sine';
+    chirpOsc.frequency.value = 2800;
+    const chirpGain = audioCtx.createGain();
+    chirpGain.gain.value = 0;
+    const chirpLfo = audioCtx.createOscillator();
+    chirpLfo.frequency.value = 3;
+    const chirpLfoGain = audioCtx.createGain();
+    chirpLfoGain.gain.value = 0.03;
+    chirpLfo.connect(chirpLfoGain);
+    chirpLfoGain.connect(chirpGain.gain);
+    chirpOsc.connect(chirpGain);
+    chirpGain.connect(gainNode);
+    chirpOsc.start();
+    chirpLfo.start();
+    nodes.push(chirpOsc, chirpLfo);
+  } else if (type === 'wind') {
+    // Filtered noise with slow modulation
+    const bufferSize = 2 * audioCtx.sampleRate;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 400;
+    filter.Q.value = 1;
+    const lfo = audioCtx.createOscillator();
+    lfo.frequency.value = 0.08;
+    const lfoGain = audioCtx.createGain();
+    lfoGain.gain.value = 200;
+    lfo.connect(lfoGain);
+    lfoGain.connect(filter.frequency);
+    lfo.start();
+    source.connect(filter);
+    filter.connect(gainNode);
+    source.start();
+    nodes.push(source, lfo);
+  }
+
+  return {
+    nodes,
+    stop: () => {
+      gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
+      setTimeout(() => {
+        nodes.forEach(n => {
+          try { (n as AudioScheduledSourceNode).stop?.(); } catch { /* already stopped */ }
+          try { n.disconnect(); } catch { /* already disconnected */ }
+        });
+        gainNode.disconnect();
+      }, 600);
+    },
+  };
+}
+
 const PHASES = [
   { name: 'שאיפה', duration: 4, color: '#4A90D9' },
   { name: 'עצירה', duration: 4, color: '#00B894' },
@@ -24,8 +187,11 @@ export default function BreathingPage() {
   const [phaseIndex, setPhaseIndex] = useState(0);
   const [timer, setTimer] = useState(4);
   const [round, setRound] = useState(1);
+  const [selectedSound, setSelectedSound] = useState('rain');
   const startTime = useRef<number>(0);
   const intervalRef = useRef<ReturnType<typeof setInterval>>(undefined);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const ambientRef = useRef<{ stop: () => void } | null>(null);
 
   const currentPhase = PHASES[phaseIndex];
 
@@ -62,6 +228,33 @@ export default function BreathingPage() {
     });
   }, [phaseIndex, user]);
 
+  const startAmbient = useCallback((soundId: string) => {
+    // Stop existing
+    if (ambientRef.current) {
+      ambientRef.current.stop();
+      ambientRef.current = null;
+    }
+    if (soundId === 'none') return;
+    try {
+      if (!audioCtxRef.current || audioCtxRef.current.state === 'closed') {
+        audioCtxRef.current = new AudioContext();
+      }
+      if (audioCtxRef.current.state === 'suspended') {
+        audioCtxRef.current.resume();
+      }
+      ambientRef.current = createAmbientSound(soundId, audioCtxRef.current);
+    } catch (err) {
+      console.error('Audio error:', err);
+    }
+  }, []);
+
+  const stopAmbient = useCallback(() => {
+    if (ambientRef.current) {
+      ambientRef.current.stop();
+      ambientRef.current = null;
+    }
+  }, []);
+
   const start = () => {
     setIsActive(true);
     setIsComplete(false);
@@ -69,6 +262,7 @@ export default function BreathingPage() {
     setTimer(4);
     setRound(1);
     startTime.current = Date.now();
+    startAmbient(selectedSound);
   };
 
   useEffect(() => {
@@ -79,6 +273,23 @@ export default function BreathingPage() {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [isActive, tick]);
+
+  // Stop ambient sound when exercise completes
+  useEffect(() => {
+    if (isComplete) {
+      stopAmbient();
+    }
+  }, [isComplete, stopAmbient]);
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      stopAmbient();
+      if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
+        audioCtxRef.current.close().catch(() => {});
+      }
+    };
+  }, [stopAmbient]);
 
   const scale = phaseIndex === 0 ? 1 + (1 - timer / 4) * 0.4 : phaseIndex === 2 ? 1.4 - (1 - timer / 4) * 0.4 : phaseIndex === 1 ? 1.4 : 1;
 
@@ -174,6 +385,43 @@ export default function BreathingPage() {
               <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>loop</span>
               {TOTAL_ROUNDS} סיבובים
             </div>
+            {/* Ambient Sound Selector */}
+            <div style={{ marginBottom: '24px' }}>
+              <p style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '12px' }}>
+                🎵 צליל רקע מרגיע
+              </p>
+              <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                {AMBIENT_SOUNDS.map(s => (
+                  <motion.button
+                    key={s.id}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setSelectedSound(s.id)}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '10px 14px',
+                      borderRadius: '14px',
+                      border: selectedSound === s.id ? '2px solid var(--primary)' : '1.5px solid #E5E7EB',
+                      background: selectedSound === s.id ? 'rgba(42,25,230,0.08)' : 'white',
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
+                      minWidth: '56px',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    <span style={{ fontSize: '1.3rem' }}>{s.emoji}</span>
+                    <span style={{
+                      fontSize: '0.68rem',
+                      fontWeight: 700,
+                      color: selectedSound === s.id ? 'var(--primary)' : 'var(--text-secondary)',
+                    }}>{s.label}</span>
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+
             <motion.button
               whileTap={{ scale: 0.97 }}
               style={{
@@ -247,10 +495,48 @@ export default function BreathingPage() {
             <div style={{ marginTop: '12px', fontWeight: 700, color: 'var(--text-light)', fontSize: '0.85rem', letterSpacing: '1px' }}>
               סיבוב {round} מתוך {TOTAL_ROUNDS}
             </div>
+            {/* Sound indicator */}
+            {selectedSound !== 'none' && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                style={{
+                  marginTop: '24px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 14px',
+                  background: 'rgba(255,255,255,0.5)',
+                  borderRadius: '20px',
+                  fontSize: '0.78rem',
+                  fontWeight: 600,
+                  color: 'var(--text-secondary)',
+                }}
+              >
+                <span>{AMBIENT_SOUNDS.find(s => s.id === selectedSound)?.emoji}</span>
+                <span>{AMBIENT_SOUNDS.find(s => s.id === selectedSound)?.label}</span>
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => { stopAmbient(); setSelectedSound('none'); }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '2px',
+                    fontSize: '0.85rem',
+                    color: 'var(--text-secondary)',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  🔇
+                </motion.button>
+              </motion.div>
+            )}
+
             <motion.button
               whileTap={{ scale: 0.95 }}
               style={{
-                marginTop: '48px',
+                marginTop: selectedSound !== 'none' ? '16px' : '48px',
                 color: 'var(--text-secondary)',
                 fontWeight: 700,
                 fontSize: '0.95rem',
@@ -261,7 +547,7 @@ export default function BreathingPage() {
                 cursor: 'pointer',
                 fontFamily: 'inherit',
               }}
-              onClick={() => { setIsActive(false); if (intervalRef.current) clearInterval(intervalRef.current); }}
+              onClick={() => { setIsActive(false); stopAmbient(); if (intervalRef.current) clearInterval(intervalRef.current); }}
             >
               עצור תרגיל
             </motion.button>

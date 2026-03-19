@@ -19,6 +19,7 @@ const InsightsPage = lazy(() => import('./pages/InsightsPage'));
 const AnalysisPage = lazy(() => import('./pages/AnalysisPage'));
 const HistoryPage = lazy(() => import('./pages/HistoryPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
+const AnalysisHistoryPage = lazy(() => import('./pages/AnalysisHistoryPage'));
 
 // Styles
 import './styles/global.css';
@@ -145,6 +146,7 @@ function AppRoutes() {
           <Route path="/breathing" element={<ProtectedRoute><BreathingPage /></ProtectedRoute>} />
           <Route path="/insights" element={<ProtectedRoute><InsightsPage /></ProtectedRoute>} />
           <Route path="/analysis" element={<ProtectedRoute><AnalysisPage /></ProtectedRoute>} />
+          <Route path="/analysis-history" element={<ProtectedRoute><AnalysisHistoryPage /></ProtectedRoute>} />
           <Route path="/history" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
 

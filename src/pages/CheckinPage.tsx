@@ -327,7 +327,7 @@ export default function CheckinPage() {
             <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', fontWeight: 500 }}>שעות</span>
           </div>
           <div className="glass" style={{ borderRadius: '16px', padding: '20px 16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', direction: 'ltr' }}>
               <motion.button
                 whileTap={{ scale: 0.85 }}
                 onClick={() => setSleepHours(prev => Math.max(0, +(prev - 0.5).toFixed(1)))}
@@ -384,14 +384,14 @@ export default function CheckinPage() {
                 />
                 <div style={{
                   position: 'absolute',
-                  right: `${100 - (sleepHours / 12) * 100}%`,
-                  transform: 'translateX(50%)',
+                  left: `${(sleepHours / 12) * 100}%`,
+                  transform: 'translateX(-50%)',
                   width: '20px',
                   height: '20px',
                   borderRadius: '50%',
                   background: 'var(--primary)',
                   boxShadow: '0 2px 8px rgba(42,25,230,0.3)',
-                  transition: 'right 0.2s',
+                  transition: 'left 0.2s',
                   pointerEvents: 'none',
                 }} />
               </div>
@@ -418,7 +418,7 @@ export default function CheckinPage() {
                 +
               </motion.button>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px', padding: '0 4px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px', padding: '0 4px', direction: 'ltr' }}>
               <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>0</span>
               <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>6</span>
               <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>12</span>

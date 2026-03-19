@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useAnalysis } from '../hooks/useAnalysis';
 import { getRelativeTime } from '../utils/helpers';
 import { ANALYSIS_CONFIG } from '../api/analysis';
-import { Sparkles, ArrowRight, TrendingUp, TrendingDown, Minus, AlertTriangle, Info, AlertCircle, Lightbulb, Shield, Zap, Download, Share2, Check, Loader2 } from 'lucide-react';
+import { Sparkles, ArrowRight, TrendingUp, TrendingDown, Minus, AlertTriangle, Info, AlertCircle, Lightbulb, Shield, Zap, Download, Share2, Check, Loader2, History } from 'lucide-react';
 import type { AIAnalysisResponse, KeyInsight, TriggerEquation } from '../types';
 
 // ═══════════════════════════════════════════
@@ -728,14 +728,14 @@ function ActionBar({
       style={{
         position: 'fixed',
         bottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
-        left: '50%',
-        transform: 'translateX(-50%)',
+        left: 0,
+        right: 0,
         display: 'flex',
+        justifyContent: 'center',
         gap: '10px',
         zIndex: 900,
-        direction: 'rtl',
-        maxWidth: 'calc(100vw - 32px)',
-        width: 'auto',
+        direction: 'ltr',
+        padding: '0 16px',
       }}
     >
       {/* Save as PDF */}
@@ -936,9 +936,24 @@ export default function AnalysisPage() {
           <ArrowRight size={20} />
         </button>
         <h1 style={{ fontSize: '1.3rem', fontWeight: 900, margin: 0 }}>ניתוח AI מעמיק</h1>
-        <div style={{ width: '44px', height: '44px', borderRadius: '14px', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-          <span style={{ fontSize: '1.3rem' }}>🧠</span>
-        </div>
+        <button
+          onClick={() => navigate('/analysis-history')}
+          style={{
+            width: '44px',
+            height: '44px',
+            borderRadius: '14px',
+            background: 'white',
+            border: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+            cursor: 'pointer',
+          }}
+          title="היסטוריית ניתוחים"
+        >
+          <History size={20} style={{ color: '#7C3AED' }} />
+        </button>
       </div>
 
       {/* Subtitle */}

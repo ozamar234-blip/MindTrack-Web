@@ -262,6 +262,27 @@ export async function saveAnalysisResult(
   }
 }
 
+// Get all saved analyses for history
+export async function getAllAnalyses(userId: string): Promise<{ id: string; analysis: AIAnalysisResponse; generated_at: string; events_analyzed: number }[]> {
+  const { data, error } = await supabase
+    .from('ai_insights')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('insight_type', 'ai_full_analysis')
+    .order('generated_at', { ascending: false });
+
+  if (error || !data) return [];
+
+  return data
+    .filter(row => row.raw_analysis)
+    .map(row => ({
+      id: row.id,
+      analysis: row.raw_analysis as unknown as AIAnalysisResponse,
+      generated_at: row.generated_at,
+      events_analyzed: row.events_analyzed || 0,
+    }));
+}
+
 // Get the last saved full analysis
 export async function getLastAnalysis(userId: string): Promise<{ analysis: AIAnalysisResponse; generated_at: string } | null> {
   const { data, error } = await supabase
