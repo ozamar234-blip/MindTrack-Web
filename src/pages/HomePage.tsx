@@ -133,7 +133,7 @@ export default function HomePage() {
       maxWidth: 'var(--max-width)',
       margin: '0 auto',
       overflow: 'hidden',
-      paddingBottom: '96px',
+      paddingBottom: '120px',
       background: 'radial-gradient(circle at top right, #e0e7ff 0%, #f6f6f8 100%)',
     }}>
       {/* Top Header */}
@@ -242,12 +242,12 @@ export default function HomePage() {
           variants={container}
           initial="hidden"
           animate="show"
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}
         >
           {/* Stats Card — Records */}
           <motion.div variants={item} style={{
             background: 'white',
-            padding: '20px',
+            padding: '16px',
             borderRadius: '16px',
             border: '1px solid #f1f5f9',
             boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
@@ -284,7 +284,7 @@ export default function HomePage() {
           {/* Stats Card — Mood */}
           <motion.div variants={item} style={{
             background: 'white',
-            padding: '20px',
+            padding: '16px',
             borderRadius: '16px',
             border: '1px solid #f1f5f9',
             boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
@@ -311,7 +311,7 @@ export default function HomePage() {
           {/* Stats Card — Insights */}
           <motion.div variants={item} style={{
             background: 'white',
-            padding: '20px',
+            padding: '16px',
             borderRadius: '16px',
             border: '1px solid #f1f5f9',
             boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
@@ -344,7 +344,7 @@ export default function HomePage() {
           {/* Stats Card — Streak */}
           <motion.div variants={item} style={{
             background: 'white',
-            padding: '20px',
+            padding: '16px',
             borderRadius: '16px',
             border: '1px solid #f1f5f9',
             boxShadow: '0 2px 8px rgba(0,0,0,0.04)',

@@ -638,7 +638,7 @@ export default function EventLogPage() {
       {/* Bottom Navigation */}
       <div style={{
         padding: '12px 16px',
-        paddingBottom: '28px',
+        paddingBottom: 'max(28px, env(safe-area-inset-bottom, 28px))',
         display: 'flex',
         gap: '12px',
         background: `linear-gradient(to top, ${purpleBg} 70%, transparent)`,

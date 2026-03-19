@@ -23,7 +23,7 @@ export default function LoginPage() {
       position: 'relative',
       width: '100%',
       maxWidth: '430px',
-      minHeight: '100vh',
+      minHeight: '100dvh',
       margin: '0 auto',
       background: 'linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 40%, #fae8ff 100%)',
       overflow: 'hidden',

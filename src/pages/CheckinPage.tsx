@@ -130,14 +130,14 @@ export default function CheckinPage() {
         </motion.div>
 
         {/* Mood Selector */}
-        <div className="no-scrollbar" style={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto', gap: '16px', padding: '16px 0', justifyContent: 'center' }}>
+        <div className="no-scrollbar" style={{ display: 'flex', flexWrap: 'nowrap', overflowX: 'auto', gap: '8px', padding: '16px 0', justifyContent: 'center' }}>
           {MOOD_EMOJIS.map((m, i) => (
             <motion.div
               key={m.value}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.15 + i * 0.06, type: 'spring', stiffness: 300, damping: 20 }}
-              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', minWidth: '72px' }}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', minWidth: '56px' }}
             >
               <motion.div
                 whileTap={{ scale: 0.88 }}
@@ -147,8 +147,8 @@ export default function CheckinPage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: '72px',
-                  height: '72px',
+                  width: '60px',
+                  height: '60px',
                   borderRadius: '50%',
                   boxShadow: mood === m.value ? '0 4px 16px rgba(42,25,230,0.2)' : '0 2px 8px rgba(0,0,0,0.05)',
                   cursor: 'pointer',
@@ -221,14 +221,14 @@ export default function CheckinPage() {
           style={{ marginTop: '40px' }}
         >
           <h3 style={{ fontSize: '1.125rem', fontWeight: 700, lineHeight: 1.3, marginBottom: '16px' }}>רמת האנרגיה שלך</h3>
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
             {ENERGY_OPTIONS.map((opt, i) => (
               <motion.div
                 key={opt.value}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5 + i * 0.05, type: 'spring', stiffness: 300, damping: 20 }}
-                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', minWidth: '60px' }}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', minWidth: '52px' }}
               >
                 <motion.div
                   whileTap={{ scale: 0.88 }}
@@ -238,8 +238,8 @@ export default function CheckinPage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    width: '56px',
-                    height: '56px',
+                    width: '48px',
+                    height: '48px',
                     borderRadius: '50%',
                     boxShadow: energyLevel === opt.value ? '0 4px 16px rgba(42,25,230,0.2)' : '0 2px 8px rgba(0,0,0,0.05)',
                     cursor: 'pointer',
@@ -270,14 +270,14 @@ export default function CheckinPage() {
           style={{ marginTop: '40px' }}
         >
           <h3 style={{ fontSize: '1.125rem', fontWeight: 700, lineHeight: 1.3, marginBottom: '16px' }}>רמת הלחץ שלך</h3>
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
             {STRESS_OPTIONS.map((opt, i) => (
               <motion.div
                 key={opt.value}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.6 + i * 0.05, type: 'spring', stiffness: 300, damping: 20 }}
-                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', minWidth: '60px' }}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', minWidth: '52px' }}
               >
                 <motion.div
                   whileTap={{ scale: 0.88 }}
@@ -287,8 +287,8 @@ export default function CheckinPage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    width: '56px',
-                    height: '56px',
+                    width: '48px',
+                    height: '48px',
                     borderRadius: '50%',
                     boxShadow: stressLevel === opt.value ? '0 4px 16px rgba(42,25,230,0.2)' : '0 2px 8px rgba(0,0,0,0.05)',
                     cursor: 'pointer',
@@ -432,14 +432,14 @@ export default function CheckinPage() {
           style={{ marginTop: '40px' }}
         >
           <h3 style={{ fontSize: '1.125rem', fontWeight: 700, lineHeight: 1.3, marginBottom: '16px' }}>איכות השינה</h3>
-          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
             {SLEEP_QUALITY_OPTIONS.map((opt, i) => (
               <motion.div
                 key={opt.value}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.8 + i * 0.05, type: 'spring', stiffness: 300, damping: 20 }}
-                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', minWidth: '56px' }}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', minWidth: '48px' }}
               >
                 <motion.div
                   whileTap={{ scale: 0.88 }}
@@ -449,8 +449,8 @@ export default function CheckinPage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    width: '52px',
-                    height: '52px',
+                    width: '44px',
+                    height: '44px',
                     borderRadius: '50%',
                     boxShadow: sleepQuality === opt.value ? '0 4px 16px rgba(42,25,230,0.2)' : '0 2px 8px rgba(0,0,0,0.05)',
                     cursor: 'pointer',

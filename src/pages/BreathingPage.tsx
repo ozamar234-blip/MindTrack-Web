@@ -86,7 +86,7 @@ export default function BreathingPage() {
     <div style={{
       position: 'relative',
       display: 'flex',
-      minHeight: '100vh',
+      minHeight: '100dvh',
       width: '100%',
       flexDirection: 'column',
       maxWidth: 'var(--max-width)',
@@ -225,8 +225,8 @@ export default function BreathingPage() {
           >
             <div
               style={{
-                width: '220px',
-                height: '220px',
+                width: 'min(220px, 55vw)',
+                height: 'min(220px, 55vw)',
                 borderRadius: '50%',
                 background: `linear-gradient(135deg, ${currentPhase.color}, ${currentPhase.color}CC)`,
                 transform: `scale(${scale})`,

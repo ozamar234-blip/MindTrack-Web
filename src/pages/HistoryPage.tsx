@@ -62,7 +62,7 @@ export default function HistoryPage() {
       maxWidth: 'var(--max-width)',
       margin: '0 auto',
       overflow: 'hidden',
-      paddingBottom: '96px',
+      paddingBottom: '120px',
       background: 'radial-gradient(circle at top right, #e0e7ff 0%, #f6f6f8 100%)',
     }}>
       {/* Header */}
