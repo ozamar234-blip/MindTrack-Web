@@ -15,8 +15,8 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLocalError('');
-    if (password.length < 6) {
-      setLocalError('הסיסמה חייבת להכיל לפחות 6 תווים');
+    if (password.length < 8) {
+      setLocalError('הסיסמה חייבת להכיל לפחות 8 תווים');
       return;
     }
     try {
@@ -167,6 +167,7 @@ export default function RegisterPage() {
                 value={fullName}
                 onChange={e => setFullName(e.target.value)}
                 required
+                maxLength={100}
                 style={{
                   width: '100%',
                   height: '56px',
@@ -251,7 +252,7 @@ export default function RegisterPage() {
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="לפחות 6 תווים"
+                  placeholder="לפחות 8 תווים"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required

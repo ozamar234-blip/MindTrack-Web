@@ -108,12 +108,16 @@ export async function getInsights(userId: string, limit = 20): Promise<AIInsight
 }
 
 export async function markInsightRead(insightId: string): Promise<void> {
-  const { error } = await supabase.from('ai_insights').update({ is_read: true }).eq('id', insightId);
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+  const { error } = await supabase.from('ai_insights').update({ is_read: true }).eq('id', insightId).eq('user_id', user.id);
   if (error) throw error;
 }
 
 export async function dismissInsight(insightId: string): Promise<void> {
-  const { error } = await supabase.from('ai_insights').update({ is_dismissed: true }).eq('id', insightId);
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+  const { error } = await supabase.from('ai_insights').update({ is_dismissed: true }).eq('id', insightId).eq('user_id', user.id);
   if (error) throw error;
 }
 

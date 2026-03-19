@@ -36,6 +36,8 @@ export async function getEventCount(userId: string, days = 7): Promise<number> {
 }
 
 export async function deleteEvent(eventId: string): Promise<void> {
-  const { error } = await supabase.from('events').delete().eq('id', eventId);
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+  const { error } = await supabase.from('events').delete().eq('id', eventId).eq('user_id', user.id);
   if (error) throw error;
 }

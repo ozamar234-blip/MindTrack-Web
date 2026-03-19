@@ -1,15 +1,30 @@
 // MindTrack AI Analysis Engine – Supabase Edge Function
 // Calls Claude API to analyze health event patterns
 // Deploy: supabase functions deploy analyze-health
-// Set secret: supabase secrets set ANTHROPIC_API_KEY=sk-ant-... (or CLAUDE_API_KEY)
+// Set secret: supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
+const ALLOWED_ORIGINS = [
+  /^https:\/\/.*\.vercel\.app$/,
+  /^http:\/\/localhost(:\d+)?$/,
+  /^http:\/\/127\.0\.0\.1(:\d+)?$/,
+];
+
+function getAllowedOrigin(req: Request): string | null {
+  const origin = req.headers.get('Origin');
+  if (!origin) return null;
+  return ALLOWED_ORIGINS.some(pattern => pattern.test(origin)) ? origin : null;
+}
+
+function buildCorsHeaders(origin: string | null): Record<string, string> {
+  return {
+    'Access-Control-Allow-Origin': origin || '',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    ...(origin ? { 'Vary': 'Origin' } : {}),
+  };
+}
 
 // ═══════════════════════════════════════════
 // System Prompt – Hebrew Primary
@@ -347,9 +362,20 @@ function sanitizeAnalysis(obj: Record<string, unknown>): Record<string, unknown>
 }
 
 Deno.serve(async (req: Request) => {
+  const origin = getAllowedOrigin(req);
+  const corsHeaders = buildCorsHeaders(origin);
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
+  }
+
+  // Reject requests from disallowed origins
+  if (!origin) {
+    return new Response(
+      JSON.stringify({ error: 'Forbidden – origin not allowed' }),
+      { status: 403, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 
   try {
@@ -362,15 +388,41 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const apiKey = Deno.env.get('ANTHROPIC_API_KEY') || Deno.env.get('CLAUDE_API_KEY');
+    const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
     if (!apiKey) {
       return new Response(
-        JSON.stringify({ error: 'API key not configured. Set ANTHROPIC_API_KEY or CLAUDE_API_KEY via supabase secrets set.' }),
+        JSON.stringify({ error: 'API key not configured. Set ANTHROPIC_API_KEY via supabase secrets set.' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     const data: AnalysisRequest = await req.json();
+
+    // ── Input validation ──
+    if (Array.isArray(data.events) && data.events.length > 500) {
+      return new Response(
+        JSON.stringify({ error: 'Too many events – maximum 500 allowed' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    if (Array.isArray(data.checkins) && data.checkins.length > 500) {
+      return new Response(
+        JSON.stringify({ error: 'Too many checkins – maximum 500 allowed' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    if (data.primary_condition && typeof data.primary_condition === 'string' && data.primary_condition.length > 200) {
+      return new Response(
+        JSON.stringify({ error: 'primary_condition too long – maximum 200 characters' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    if (data.locale && typeof data.locale === 'string' && data.locale.length > 10) {
+      return new Response(
+        JSON.stringify({ error: 'locale too long – maximum 10 characters' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     // Validate minimum data
     if (!data.events || data.events.length < 5) {
@@ -396,7 +448,7 @@ Deno.serve(async (req: Request) => {
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
+          model: 'claude-haiku-4-5-20251001',
           max_tokens: 8192,
           temperature: 0.3,
           system: SYSTEM_PROMPT_HE,
@@ -412,7 +464,7 @@ Deno.serve(async (req: Request) => {
       const errorText = await anthropicResponse.text();
       console.error('Anthropic API error:', anthropicResponse.status, errorText);
       return new Response(
-        JSON.stringify({ error: `AI API error: ${anthropicResponse.status}`, details: errorText }),
+        JSON.stringify({ error: `AI API error: ${anthropicResponse.status}` }),
         { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }

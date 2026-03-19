@@ -490,6 +490,7 @@ export default function CheckinPage() {
             placeholder="איך עבר היום שלך?"
             value={notes}
             onChange={e => setNotes(e.target.value)}
+            maxLength={1000}
             rows={4}
             style={{ width: '100%', borderRadius: '16px', padding: '16px', border: 'none', fontSize: '0.875rem', fontFamily: 'inherit', color: 'var(--text-primary)', outline: 'none', resize: 'vertical', minHeight: '100px' }}
           />

@@ -122,6 +122,7 @@ export default function SettingsPage() {
               value={displayName}
               onChange={e => setDisplayName(e.target.value)}
               placeholder="איך תרצה שנקרא לך?"
+              maxLength={100}
               className="glass"
               style={{
                 width: '100%',

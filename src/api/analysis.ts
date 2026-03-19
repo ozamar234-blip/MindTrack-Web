@@ -180,7 +180,10 @@ export async function runAIAnalysis(
 
   // Get the user's JWT for authorization
   const { data: { session } } = await supabase.auth.getSession();
-  const accessToken = session?.access_token || SUPABASE_ANON_KEY;
+  if (!session?.access_token) {
+    throw new Error('לא מחובר – יש להתחבר מחדש כדי להריץ ניתוח');
+  }
+  const accessToken = session.access_token;
 
   // Use direct fetch instead of supabase.functions.invoke for better error handling
   const functionUrl = `${SUPABASE_URL}/functions/v1/analyze-health`;

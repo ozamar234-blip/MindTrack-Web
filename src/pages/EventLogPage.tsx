@@ -388,6 +388,7 @@ export default function EventLogPage() {
               placeholder="הערות על אוכל (אופציונלי)..."
               value={foodNotes}
               onChange={e => setFoodNotes(e.target.value)}
+              maxLength={500}
               style={{
                 width: '100%',
                 height: '48px',
@@ -501,6 +502,7 @@ export default function EventLogPage() {
               placeholder="ספרו לנו עוד על מה שקרה..."
               value={notes}
               onChange={e => setNotes(e.target.value)}
+              maxLength={1000}
               style={{
                 width: '100%',
                 borderRadius: '20px',
