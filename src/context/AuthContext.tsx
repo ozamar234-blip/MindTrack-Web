@@ -45,19 +45,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s);
-      setUser(s?.user ?? null);
+    let didTimeout = false;
+
+    // Safety timeout: if getSession hangs (e.g. stale refresh token), stop loading after 5s
+    const timeout = setTimeout(() => {
+      didTimeout = true;
       setLoading(false);
+    }, 5000);
+
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      if (!didTimeout) {
+        clearTimeout(timeout);
+        setSession(s);
+        setUser(s?.user ?? null);
+        setLoading(false);
+      }
+    }).catch((err) => {
+      console.error('getSession failed:', err);
+      if (!didTimeout) {
+        clearTimeout(timeout);
+        setLoading(false);
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+      clearTimeout(timeout);
       setSession(s);
       setUser(s?.user ?? null);
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      clearTimeout(timeout);
+      subscription.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
